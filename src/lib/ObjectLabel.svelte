@@ -4,6 +4,7 @@
   import GenericLabel from "./GenericLabel.svelte";
   import * as utils from "../assets/utils.js";
   import FunctionLabel from "./FunctionLabel.svelte";
+  import ObjectLabel from "./ObjectLabel.svelte";
 
   export let fieldName;
   export let fieldValue;
@@ -15,7 +16,7 @@
     <slot />
   </div>
   {#each Object.entries(fieldValue) as [key, value], i}
-    {#if key !== "_HIDDEN" && key !== "WIN_TITLE"}
+    {#if key !== "HIDDEN" && key !== "WIN_TITLE"}
       {#if utils.getTypeAsString(value) === "Array"}
         <ArrayLabel fieldName="{key}" bind:fieldValue="{fieldValue[key]}" />
       {:else if utils.getTypeAsString(value) === "String"}
@@ -40,6 +41,10 @@
         <GenericLabel
           type="checkbox"
           attributes="{utils.getAttributes(key)}"
+          fieldName="{utils.processFieldName(key)}"
+          bind:fieldValue="{fieldValue[key]}" />
+      {:else if utils.getTypeAsString(value) === "Object"}
+        <ObjectLabel
           fieldName="{utils.processFieldName(key)}"
           bind:fieldValue="{fieldValue[key]}" />
       {:else if utils.getTypeAsString(value) === "Function"}
