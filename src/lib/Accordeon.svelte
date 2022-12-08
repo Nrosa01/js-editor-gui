@@ -2,7 +2,6 @@
   import { slide } from "svelte/transition";
   export let name = "Item";
   export let expanded = false;
-  import icons from "../assets/data/icons.json";
 
   function toggle() {
     expanded = !expanded;
@@ -24,7 +23,7 @@
         <img
           on:click="{toggle}"
           on:keydown
-          src="{icons.CaretRight}"
+          src="caret-right.png"
           alt=""
           class="{`w-8 duration-75 transition-all ${iconClass} hover:bg-slate-600 hover:rounded-lg hover:brightness-125`}" />
       </div>

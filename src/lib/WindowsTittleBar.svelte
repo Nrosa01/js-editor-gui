@@ -1,5 +1,4 @@
 <script>
-  import * as icons from "../assets/data/icons.json";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
@@ -28,7 +27,7 @@
       on:click="{close}"
       class="flex flex-col items-center justify-center w-12 h-full group">
       <img
-        src="{icons.Close}"
+        src="close.png"
         alt=""
         class="flex items-center w-4 rounded-lg transition-all duration-150 group-hover:rotate-90 group-hover:bg-red-400" />
     </button>
