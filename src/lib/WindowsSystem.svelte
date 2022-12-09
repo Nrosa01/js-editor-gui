@@ -4,6 +4,7 @@
   import * as utils from "../assets/utils.js";
   import { onMount } from "svelte";
   import * as objUtils from "../assets/objectUtils.js";
+  import { addToApi } from "../assets/api.js";
 
   let container;
 
@@ -13,7 +14,6 @@
   };
 
   let data = utils.load();
-  utils.sharedData.add = addObj;
 
   $: {
     // Make sure scale is no less than 0.1
@@ -109,6 +109,21 @@
     data.htmlItems = data.htmlItems.filter((_, i) => i !== id);
     data.jsItems = data.jsItems.filter((_, i) => i !== id);
   }
+
+  // Api functions
+  addToApi("add", addObj);
+  addToApi("addItem", addElmnd);
+  addToApi("clear", () => {
+    data.jsItems = [];
+    data.htmlItems = [];
+    data.htmlItemsData = [];
+    localStorage.clear();
+  });
+  addToApi("getItems", () => data.jsItems);
+  addToApi("getScale", () => data.scale);
+  addToApi("setScale", (scale) => (data.scale = scale));
+  addToApi("saveToFile", () => utils.saveConfigToFile(data, "config.json"));
+  addToApi("loadFromFile", loadConfig);
 </script>
 
 <div class="flex flex-col w-full h-full" bind:this="{container}">

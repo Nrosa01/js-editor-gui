@@ -1,8 +1,4 @@
 import * as objUtils from './objectUtils.js';
-export let sharedData = {};
-sharedData.serializeJsAsText = objUtils.serializeJsAsText;
-sharedData.deserializeJsAsText = objUtils.deserializeJsAsText;
-sharedData.makeReadOnly = objUtils.makeReadOnly;
 
 export function getTypeAsString(type) {
     return Object.prototype.toString.call(type).slice(8, -1);
@@ -135,7 +131,7 @@ export function dragElement(elmnt, child) {
         pos2 = pos4 -  e.clientY;
         pos3 =  e.clientX;
         pos4 =  e.clientY;
-        
+
         // set the element's new position:
         elmnt.style.top = (elmnt.offsetTop - pos2 * scaleMultiplier) + "px";
         elmnt.style.left = (elmnt.offsetLeft - pos1 * scaleMultiplier) + "px";

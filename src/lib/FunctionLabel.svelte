@@ -1,11 +1,11 @@
 <script>
-  import { sharedData } from "../assets/utils.js";
+  import { api } from "../assets/api.js";
   export let fieldName = "Button";
   export let parameter;
   export let func;
 
   function call() {
-    func(parameter, sharedData);
+    func(parameter, api);
   }
 </script>
 
