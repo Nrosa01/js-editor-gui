@@ -15,7 +15,7 @@
 
   const addElmnd = async () => {
     let loadedFile = await utils.loadFile(".js, .json");
-    loadedFile = await utils.importBase64StringAsJSObject(loadedFile);
+    loadedFile = await utils.importUTF8StringAsJSObject(loadedFile);
 
     if (
       loadedFile !== undefined &&

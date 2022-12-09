@@ -241,8 +241,8 @@ export function loadConfigFromFile() {
     return file;
 }
 
-export function importBase64StringAsJSObject(str) {
-    return import("data:text/javascript;base64," + btoa(str));
+export function importUTF8StringAsJSObject(str) {
+    return import(/* @vite-ignore */ "data:text/javascript;utf-8," + str);
 }
 
 export async function loadFile(fileTypes) {
