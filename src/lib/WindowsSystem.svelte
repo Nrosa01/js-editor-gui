@@ -37,6 +37,9 @@
     let loadedFile = await utils.loadFile(".json");
     loadedFile = objUtils.deserializeJsAsText(loadedFile);
     loadedFile.htmlItems = [];
+    // Check if it contains scale, if not or if it's not a number, set it to 1
+    if (loadedFile.scale === undefined || isNaN(loadedFile.scale))
+      loadedFile.scale = 1;
 
     if (loadedFile !== undefined && typeof loadedFile === "object") {
       data = loadedFile;
