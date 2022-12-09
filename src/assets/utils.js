@@ -13,9 +13,18 @@ export function captilazeFirstLetter(string) {
 }
 
 export function processFieldName(fieldName) {
-    // Capitalize first letter and add space before each capital letter except the first one
+    // Capitalize first letter
     const capitalized = captilazeFirstLetter(fieldName);
-    const result = capitalized.replace(/([A-Z])/g, ' $1').trim();
+    
+    let result = "";
+    for (let i = 0; i < capitalized.length; i++) {
+        const char = capitalized.charAt(i);
+        if (i > 0 && char === char.toUpperCase() && capitalized.charAt(i - 1) !== capitalized.charAt(i - 1).toUpperCase()) {
+            result += " ";
+        }
+        result += char;
+    }
+
     // If the text contains $, we want to take the text from the start to the $ and add it to the result withouth the $
     if (result.includes('$')) {
         const indexOf$ = result.indexOf('$');
