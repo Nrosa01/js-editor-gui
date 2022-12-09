@@ -121,14 +121,24 @@ export function dragElement(elmnt, child) {
         e.preventDefault();
 
         // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        elmnt.style.top = elmnt.offsetTop - pos2 + "px";
-        elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
         const parent = elmnt.parentElement;
+
+        let scaleMultiplier = 1;
+        // Parent might have a scale, so we need to take it into account
+        if (parent.style.transform) {
+            const scale = parent.style.transform.split('(')[1].split(')')[0].split(',')[0];
+            scaleMultiplier = parseFloat(scale);
+            scaleMultiplier = 1 / scaleMultiplier;
+        }
+
+        pos1 = pos3 -  e.clientX;
+        pos2 = pos4 -  e.clientY;
+        pos3 =  e.clientX;
+        pos4 =  e.clientY;
+        
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2 * scaleMultiplier) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1 * scaleMultiplier) + "px";
 
         // Check if the element is out of the parent, compute parent style
         const parentStyle = window.getComputedStyle(parent);
@@ -159,15 +169,15 @@ export function dragElement(elmnt, child) {
         }
 
         // Clamp the element to the parent
-        let minPos = parentPaddingLeft - elementMarginLeft + l;
-        let maxPos = parentWidth - parentPaddingRight - elementWidth - elementMarginRight + l - 1;
-        const currentLeft = parseInt(elmnt.style.left);
-        elmnt.style.left = Clamp(currentLeft, minPos, maxPos) + "px";
+        // let minPos = parentPaddingLeft - elementMarginLeft + l;
+        // let maxPos = parentWidth - parentPaddingRight - elementWidth - elementMarginRight + l - 1;
+        // const currentLeft = parseInt(elmnt.style.left);
+        // elmnt.style.left = Clamp(currentLeft, minPos, maxPos) + "px";
 
-        const minYPos = parentPaddingTop - elementMarginTop;
-        const maxYPos = parentHeight - parentPaddingBottom - elementHeight - elementMarginBottom;
-        const currentTop = parseInt(elmnt.style.top);
-        elmnt.style.top = Clamp(currentTop, minYPos, maxYPos) + "px";
+        // const minYPos = parentPaddingTop - elementMarginTop;
+        // const maxYPos = parentHeight - parentPaddingBottom - elementHeight - elementMarginBottom;
+        // const currentTop = parseInt(elmnt.style.top);
+        // elmnt.style.top = Clamp(currentTop, minYPos, maxYPos) + "px";
     }
 
     function closeDragElement(e) {
