@@ -31,7 +31,7 @@
       attributes = {
         top: parentHeight / 2 - elementHeight / 2,
         left: parentWidth / 2 - elementWidth / 2,
-        zIndex: document.querySelectorAll('.absolute').length,
+        zIndex: document.querySelectorAll(".absolute").length,
       };
     }
 
@@ -56,8 +56,6 @@
 
 <div
   transition:scale
-  on:mousedown="{() =>
-    moveToTop(dragElementNode, document.querySelectorAll('.absolute'))}"
   bind:this="{dragElementNode}"
   class="w-[25%] max-h-screen max-w-full bg-slate-500 absolute z-10 text-center resize overflow-auto rounded-md shadow-lg">
   <WindowsTittleBar

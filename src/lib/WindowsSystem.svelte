@@ -58,6 +58,11 @@
         default:
           break;
       }
+
+      // Auto save every 15 seconds
+      setInterval(() => {
+        utils.save(data);
+      }, 15000);
     });
 
     function getHTMLItemsData() {

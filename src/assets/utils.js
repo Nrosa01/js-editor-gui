@@ -15,7 +15,7 @@ export function captilazeFirstLetter(string) {
 export function processFieldName(fieldName, defaultValue) {
     // Capitalize first letter
     const capitalized = captilazeFirstLetter(fieldName);
-    
+
     let result = "";
     for (let i = 0; i < capitalized.length; i++) {
         const char = capitalized.charAt(i);
@@ -32,14 +32,13 @@ export function processFieldName(fieldName, defaultValue) {
         return textBefore$;
     }
 
-    if(result === "")
+    if (result === "")
         return defaultValue + "" ?? "";
 
     return result;
 }
 
-export function getAttributes(text)
-{
+export function getAttributes(text) {
     const indexOf$ = text.indexOf('$');
     const attribus = text.substring(indexOf$ + 1);
     return attribus.split('$');
@@ -75,10 +74,10 @@ export function moveToTop(element, others) {
     // We don't want z index to be too high, so we order them 
     // For example if we have 3 elements, then we want the z-index to be 1, 2, 3
     let keys = Object.keys(others);
-    
-    let othersSorted =  keys.map(function(key) {
+
+    let othersSorted = keys.map(function (key) {
         return others[key];
-    }).sort(function(a, b) {
+    }).sort(function (a, b) {
         return parseInt(a.style.zIndex) - parseInt(b.style.zIndex);
     });
 
@@ -218,7 +217,6 @@ export function load() {
     if (htmlItemsData === null) htmlItemsData = [];
 
     let htmlItems = [];
-    //htmlItems.length = htmlItemsData.length;
 
     return { jsItems, htmlItemsData, htmlItems };
 }
@@ -229,7 +227,8 @@ export function save(data) {
 }
 
 export function saveConfigToFile(data, fileName) {
-    saveToFile(fileName, objUtils.serializeJsAsText(data));
+    const config = { jsItems: data.jsItems, htmlItemsData: data.htmlItemsData }
+    saveToFile(fileName, objUtils.serializeJsAsText(config));
 }
 
 export function loadConfigFromFile() {
