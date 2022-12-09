@@ -37,9 +37,8 @@
 
     {#if expanded}
       <div
-        class="{name === '' ? 'w-full' : 'w-[96%]'} text-start"
-        transition:slide>
-        <slot />
+        class="{name === '' ? 'w-full' : 'w-[96%]'} text-start" transition:slide>
+          <slot />
       </div>
     {/if}
   </div>

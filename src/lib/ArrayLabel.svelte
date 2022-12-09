@@ -2,6 +2,7 @@
   import Accordeon from "./Accordeon.svelte";
   import * as utils from "../assets/utils.js";
   import ObjectLabel from "./ObjectLabel.svelte";
+  import { slide } from "svelte/transition";
 
   function add() {
     let obj = {};
@@ -24,6 +25,7 @@
   export let fieldValue;
   const objectModel = fieldValue[0];
   Object.assign(objectModel, fieldValue[0]);
+
 </script>
 
 <div>
@@ -35,13 +37,13 @@
         on:change="{inputChange}"
         value="{Object.entries(fieldValue).length}" />
     </div>
-    {#each Object.entries(fieldValue) as [key, value], i}
-      <div class="flex flex-row">
+      {#each Object.entries(fieldValue) as [key, value] , i (value)}
+      <div class="flex flex-row" transition:slide|local>
         <ObjectLabel
-          fieldName="{utils.processFieldName(value[utils.getFirstFieldName(value)], i)}"
-          bind:fieldValue="{fieldValue[key]}" />
+        fieldName="{utils.processFieldName(value[utils.getFirstFieldName(value)], i)}"
+        bind:fieldValue="{fieldValue[key]}" />
       </div>
-    {/each}
+      {/each}
     <div class="flex flex-row items-center justify-end">
       <button on:click="{add}" class="bg-slate-600 px-2 py-1 font-bold text-xl text-slate-200 shadow-lg rounded-xl my-2 mr-1 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
         >+</button>
