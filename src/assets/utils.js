@@ -12,7 +12,7 @@ export function captilazeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function processFieldName(fieldName) {
+export function processFieldName(fieldName, defaultValue) {
     // Capitalize first letter
     const capitalized = captilazeFirstLetter(fieldName);
     
@@ -31,6 +31,10 @@ export function processFieldName(fieldName) {
         const textBefore$ = result.substring(0, indexOf$);
         return textBefore$;
     }
+
+    if(result === "")
+        return defaultValue + "" ?? "";
+
     return result;
 }
 
@@ -192,7 +196,10 @@ export function valuesToDefault(obj) {
                 valuesToDefault(value);
                 break;
             case "Array":
+                const firstItem = value[0];
+                valuesToDefault(firstItem);
                 obj[key] = [];
+                obj[key].push(firstItem);
                 break;
             case "Function":
                 obj[key] = value;

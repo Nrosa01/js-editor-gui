@@ -6,6 +6,7 @@
   function add() {
     let obj = {};
     Object.assign(obj, objectModel);
+    utils.valuesToDefault(obj);
     fieldValue = [...fieldValue, obj];
   }
 
@@ -37,9 +38,7 @@
     {#each Object.entries(fieldValue) as [key, value], i}
       <div class="flex flex-row">
         <ObjectLabel
-          fieldName="{utils.processFieldName(
-            value[utils.getFirstFieldName(value)]
-          )}"
+          fieldName="{utils.processFieldName(value[utils.getFirstFieldName(value)], i)}"
           bind:fieldValue="{fieldValue[key]}" />
       </div>
     {/each}
