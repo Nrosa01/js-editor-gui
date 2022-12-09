@@ -45,7 +45,10 @@
 
     if (loadedFile !== undefined && typeof loadedFile === "object") {
       // Check if loaded file contains jsItems and if it's an array
-      if (loadedFile.jsItems !== undefined && Array.isArray(loadedFile.jsItems)) {
+      if (
+        loadedFile.jsItems !== undefined &&
+        Array.isArray(loadedFile.jsItems)
+      ) {
         // Check if each item in jsItems is an object
         for (const item of loadedFile.jsItems) {
           if (typeof item !== "object") {
@@ -58,7 +61,6 @@
         return;
       }
       data = loadedFile;
-      utils.save(data);
     }
   };
 
@@ -95,6 +97,12 @@
       },
       { passive: false }
     );
+
+    // Set autosave every 5 seconds
+    setInterval(() => {
+      getHTMLItemsData();
+      utils.save(data);
+    }, 5000);
   });
 
   function getHTMLItemsData() {
