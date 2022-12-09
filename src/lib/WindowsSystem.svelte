@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import * as objUtils from "../assets/objectUtils.js";
   import { addToApi } from "../assets/api.js";
+  import Mover from "./Mover.svelte";
 
   let container;
 
@@ -129,6 +130,7 @@
   addToApi("loadFromFile", loadConfig);
 </script>
 
+<Mover items="{data.htmlItems}" scale="{data.scale}"/>
 <div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows
