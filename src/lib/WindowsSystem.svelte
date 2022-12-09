@@ -15,6 +15,7 @@
   };
 
   let data = utils.load();
+  data.jsItems = [];
 
   $: {
     // Make sure scale is no less than 0.1
@@ -43,7 +44,21 @@
       loadedFile.scale = 1;
 
     if (loadedFile !== undefined && typeof loadedFile === "object") {
+      // Check if loaded file contains jsItems and if it's an array
+      if (loadedFile.jsItems !== undefined && Array.isArray(loadedFile.jsItems)) {
+        // Check if each item in jsItems is an object
+        for (const item of loadedFile.jsItems) {
+          if (typeof item !== "object") {
+            alert("Invalid config file");
+            return;
+          }
+        }
+      } else {
+        alert("Invalid config file");
+        return;
+      }
       data = loadedFile;
+      utils.save(data);
     }
   };
 
@@ -130,7 +145,7 @@
   addToApi("loadFromFile", loadConfig);
 </script>
 
-<Mover items="{data.htmlItems}" scale="{data.scale}"/>
+<Mover items="{data.htmlItems}" scale="{data.scale}" />
 <div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows
