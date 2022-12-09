@@ -50,7 +50,6 @@
 
   function close() {
     dispatch("close", id);
-    console.log("close");
   }
 </script>
 

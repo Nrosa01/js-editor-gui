@@ -28,6 +28,7 @@
   const loadConfig = async () => {
     let loadedFile = await utils.loadFile(".json");
     loadedFile = objUtils.deserializeJsAsText(loadedFile);
+    loadedFile.htmlItems = [];
 
     if (loadedFile !== undefined && typeof loadedFile === "object") {
       data = loadedFile;
