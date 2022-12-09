@@ -29,7 +29,7 @@
       <img
         src="close.png"
         alt=""
-        class="flex items-center w-4 rounded-lg transition-all duration-150 group-hover:rotate-90 group-hover:bg-red-400" />
+        class="flex items-center w-6 p-1 rounded-lg transition-all duration-150 group-hover:rotate-12 group-hover:bg-red-400" />
     </button>
   </div>
 </nav>
