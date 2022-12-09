@@ -15,7 +15,6 @@
   };
 
   let data = utils.load();
-  data.jsItems = [];
 
   $: {
     // Make sure scale is no less than 0.1
