@@ -216,14 +216,19 @@ export function load() {
     let htmlItemsData = objUtils.deserializeJsAsText(localStorage.getItem("htmlItemsData"));
     if (htmlItemsData === null) htmlItemsData = [];
 
+    let scale = localStorage.getItem("scale");
+    if (scale === null) scale = 1;
+    else scale = parseFloat(scale);
+
     let htmlItems = [];
 
-    return { jsItems, htmlItemsData, htmlItems };
+    return { jsItems, htmlItemsData, htmlItems, scale };
 }
 
 export function save(data) {
     localStorage.setItem("items", objUtils.serializeJsAsText(data.jsItems));
     localStorage.setItem("htmlItemsData", objUtils.serializeJsAsText(data.htmlItemsData));
+    localStorage.setItem("scale", data.scale);
 }
 
 export function saveConfigToFile(data, fileName) {

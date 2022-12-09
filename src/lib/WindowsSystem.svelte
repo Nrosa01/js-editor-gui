@@ -5,6 +5,8 @@
   import { onMount } from "svelte";
   import * as objUtils from "../assets/objectUtils.js";
 
+  let container;
+
   //localStorage.clear();
   const addObj = (obj) => {
     data.jsItems = [...data.jsItems, obj];
@@ -12,6 +14,12 @@
 
   let data = utils.load();
   utils.sharedData.add = addObj;
+
+  $: {
+    // Make sure scale is no less than 0.1
+    if (data.scale < 0.1) data.scale = 0.1;
+    if (container) container.style.transform = `scale(${data.scale})`;
+  }
 
   const addElmnd = async () => {
     let loadedFile = await utils.loadFile(".js, .json");
@@ -38,58 +46,61 @@
   onMount(() => {
     document.addEventListener("keydown", (event) => {
       const keyToUpper = event.key.toUpperCase();
-      // Switch statement for key presses
-      switch (keyToUpper) {
-        case "A":
-        case "O":
-          addElmnd();
-          break;
-        case "C":
-          data.jsItems = [];
-          data.htmlItems = [];
-          data.htmlItemsData = [];
-          localStorage.clear();
-          break;
-        case "S":
-          utils.saveConfigToFile(data, "config.json");
-          break;
-        case "L":
-        case "T":
-          loadConfig();
-        default:
-          break;
+      // If event is Ctrl + + or Ctrl + - Prevent zoom
+      if (event.ctrlKey && (keyToUpper === "+" || keyToUpper === "-")) {
+        event.preventDefault();
+        data.scale += keyToUpper === "+" ? 0.1 : -0.1;
       }
-
-      // Auto save every 15 seconds
-      setInterval(() => {
-        utils.save(data);
-      }, 15000);
     });
 
-    function getHTMLItemsData() {
-      data.htmlItemsData = [];
-      for (let i = 0; i < data.htmlItems.length; i++) {
-        const element = data.htmlItems[i];
-        const style = window.getComputedStyle(element);
-        const width = parseInt(style.width);
-        const height = parseInt(style.height);
-        const left = parseInt(style.left);
-        const top = parseInt(style.top);
-        const zIndex = parseInt(style.zIndex);
-        data.htmlItemsData.push({ width, height, left, top, zIndex });
-      }
+    //For Google Chrome
+    document.addEventListener(
+      "mousewheel",
+      (event) => {
+        if (event.ctrlKey == true) {
+          event.preventDefault();
+          data.scale += event.deltaY > 0 ? -0.1 : 0.1;
+        }
+      },
+      { passive: false }
+    );
 
-      return data.htmlItemsData;
+    // For Mozilla Firefox
+    document.addEventListener(
+      "DOMMouseScroll",
+      (event) => {
+        if (event.ctrlKey == true) {
+          event.preventDefault();
+          data.scale += event.deltaY > 0 ? -0.1 : 0.1;
+        }
+      },
+      { passive: false }
+    );
+  });
+
+  function getHTMLItemsData() {
+    data.htmlItemsData = [];
+    for (let i = 0; i < data.htmlItems.length; i++) {
+      const element = data.htmlItems[i];
+      const style = window.getComputedStyle(element);
+      const width = parseInt(style.width);
+      const height = parseInt(style.height);
+      const left = parseInt(style.left);
+      const top = parseInt(style.top);
+      const zIndex = parseInt(style.zIndex);
+      data.htmlItemsData.push({ width, height, left, top, zIndex });
     }
 
-    data.getItemData = getHTMLItemsData;
+    return data.htmlItemsData;
+  }
 
-    // On Page Close, save items to localStorage
-    window.onbeforeunload = () => {
-      getHTMLItemsData();
-      utils.save(data);
-    };
-  });
+  data.getItemData = getHTMLItemsData;
+
+  // On Page Close, save items to localStorage
+  window.onbeforeunload = () => {
+    getHTMLItemsData();
+    utils.save(data);
+  };
 
   function close(event) {
     let id = event.detail;
@@ -100,7 +111,7 @@
   }
 </script>
 
-<div class="flex flex-col w-full h-full bg-slate-600">
+<div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows
       on:close="{close}"
