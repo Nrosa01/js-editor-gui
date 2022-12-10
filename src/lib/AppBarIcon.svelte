@@ -17,10 +17,8 @@
     on:click="{callback}"
     class="{`w-12 h-12 motion-safe:transition motion-safe:ease-in-out
     motion-safe:hover:scale-110 motion-safe:duration-200 
-    relative flex items-center justify-center p-1 my-4 mx-2 rounded-md hover:rounded-xl hover:bg-slate-600 group-active:scale-90 ${
-      $$props.class ?? ''
-    }`}">
-    <img src="{src}" alt="" />
+    relative flex items-center justify-center p-1 my-4 mx-2 rounded-md hover:rounded-xl hover:bg-slate-600 group-active:scale-90 ${$$props.class ?? ''}`}">
+    <img src="{src}" alt="" class="{`${$$props.button ?? ''}`}"/>
   </button>
 
   <span
