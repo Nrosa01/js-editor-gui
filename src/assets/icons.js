@@ -1,7 +1,7 @@
 import add from "/baricons/add.png";
-import upload from "/baricons/upload.png";
+import download from "/baricons/download.png";
 
 export default {
     add,
-    upload
+    download
 }
