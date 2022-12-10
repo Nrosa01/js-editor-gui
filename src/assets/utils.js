@@ -238,7 +238,7 @@ export function save(data) {
 }
 
 export function saveConfigToFile(data, fileName) {
-    const config = { jsItems: data.jsItems, htmlItemsData: data.htmlItemsData }
+    const config = { jsItems: data.jsItems, htmlItemsData: data.htmlItemsData, scale: data.scale }
     saveToFile(fileName, objUtils.serializeJsAsText(config));
 }
 
