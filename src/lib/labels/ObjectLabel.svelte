@@ -19,7 +19,7 @@
     Boolean: BoolLabel,
     Null: TextLabel,
     Array: ArrayLabel,
-    Object: ObjectLabel,
+    Object: this,
     Function: FunctionLabel,
   };
 </script>
@@ -35,7 +35,7 @@
           this="{optionsMap[utils.getTypeAsString(value)]}"
           parent="{fieldValue}"
           bind:fieldName="{key}"
-          bind:fieldValue="{value}" />
+          bind:fieldValue="{fieldValue[key]}" />
       {/if}
     {/if}
   {/each}
