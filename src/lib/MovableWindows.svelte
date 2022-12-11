@@ -54,6 +54,7 @@
 </script>
 
 <div
+  on:pointerdown="{() => moveToTop(dragElementNode, document.querySelectorAll('.absolute'))}"
   data-movable="movable"
   transition:scale
   bind:this="{dragElementNode}"
