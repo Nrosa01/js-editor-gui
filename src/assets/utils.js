@@ -396,12 +396,10 @@ export function convertToEditorObject(obj) {
                 obj[key] = { value: value, type$jsEditor: "Boolean" };
                 break;
             case "Object":
-                convertToEditorObject(value);
-                obj[key] = { value: value, type$jsEditor: "Object" };
+                obj[key] = { value: convertToEditorObject(value), type$jsEditor: "Object" };
                 break;
                 case "Array":
-                convertToEditorObject(value);
-                obj[key] = { value: value, type$jsEditor: "Array" };
+                obj[key] = { value: convertToEditorObject(value), type$jsEditor: "Array" };
                 break;
             case "Function":
                 obj[key] = { value: value, type$jsEditor: "Function" };
@@ -410,4 +408,6 @@ export function convertToEditorObject(obj) {
                 break;
         }
     }
+
+    return obj;
 }
