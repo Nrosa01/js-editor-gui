@@ -46,22 +46,35 @@
   onMount(() => {
     dragElement(dragElementNode, dragElementChild);
     initAttribues();
+
+    new ResizeObserver((e) => {
+      // Make dragElementNode scale with slot
+      if (slot === undefined || dragElementNode === null) return;
+
+      dragElementNode.style.width = slot.offsetWidth + "px";
+      dragElementNode.style.height = slot.offsetHeight + "px";
+    }).observe(slot);
   });
 
   function close() {
     dispatch("close", id);
   }
+
+  let slot;
 </script>
 
 <div
-  on:pointerdown="{() => moveToTop(dragElementNode, document.querySelectorAll('.absolute'))}"
+  on:pointerdown="{() =>
+    moveToTop(dragElementNode, document.querySelectorAll('.absolute'))}"
   data-movable="movable"
   transition:scale
   bind:this="{dragElementNode}"
-  class="w-[25%] max-h-screen max-w-full bg-slate-500 absolute overflow-auto resize z-10 text-center rounded-md shadow-lg">
+  class="w-[25%] min-h-max bg-slate-500 absolute z-10 text-center rounded-md shadow-lg">
   <WindowsTittleBar
     windowsName="{windowsName}"
     bind:node="{dragElementChild}"
     on:close="{close}" />
-  <slot />
+  <div bind:this="{slot}" class="overflow-auto resize bg-slate-500">
+    <slot />
+  </div>
 </div>
