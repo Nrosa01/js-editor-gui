@@ -13,7 +13,7 @@
 
 <nav
   bind:this="{node}"
-  class="flex justify-between bg-slate-800 text-white w-full cursor-move">
+  class="flex justify-between bg-slate-800 text-white min-w-full cursor-move">
   <div class="flex w-full items-center">
     <h1 class="text-lg mx-8 py-2 font-bold font-heading select-none">
       {windowsName}

@@ -25,6 +25,7 @@
     while (value < Object.entries(fieldValue).length) remove();
   }
 
+  export let parent;
   export let fieldName;
   export let fieldValue;
   const objectModel = fieldValue[0];
