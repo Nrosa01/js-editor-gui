@@ -12,7 +12,7 @@
   $: iconClass = expanded ? expandedClass : collapsedClass;
 </script>
 
-<div class="{`w-full bg-slate-500`}">
+<div class="{`w-full bg-slate-500 ${$$props.class ?? ""}`}">
   <div class="flex flex-col items-end">
     <div
       class="flex flex-row items-center justify-center w-full {name === ''
@@ -28,7 +28,7 @@
           class="{`w-8 duration-75 transition-all ${iconClass} hover:bg-slate-600 hover:rounded-lg hover:brightness-125`}" />
       </div>
       <button
-        class="w-full inline-block text-start pr-6 mr-2 mb-1 pl-3 py-2 bg-slate-700 text-white font-medium text-xs 
+        class="w-full inline-block text-start pr-6 mr-2 mb-1 pl-3 py-2 bg-slate-700 font-medium text-xs 
         leading-normal uppercase rounded shadow-md hover:bg-slate-800 hover:shadow-lg focus:bg-slate-800 
         focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-900 active:shadow-lg transition duration-150 ease-in-out"
         on:click="{toggle}">{name}</button>

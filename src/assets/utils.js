@@ -444,6 +444,13 @@ export function checkObjectHidden(obj) {
     else return false;
 }
 
+export function getAttribute(obj, attribute) {
+    if (obj.hasOwnProperty("attributes$jsEditor")) {
+        return obj.attributes$jsEditor.includes(attribute)
+    }
+    else return false;
+}
+
 export function checkLabelHidden(obj) {
     if (obj.hasOwnProperty("attributes$jsEditor")) {
         return obj.attributes$jsEditor.includes("HIDE_LABEL")

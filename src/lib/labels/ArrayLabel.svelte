@@ -8,6 +8,7 @@
   import BoolLabel from "./BoolLabel.svelte";
   import FunctionLabel from "./FunctionLabel.svelte";
   import ArrayLabel from "./ArrayLabel.svelte";
+  import { onMount } from "svelte";
 
   function add() {
     let obj = {};
@@ -29,7 +30,7 @@
   export let parent;
   export let fieldName;
   export let fieldValue;
-  
+
   const objectModel = fieldValue.value[0];
   Object.assign(objectModel, fieldValue.value[0]);
 
@@ -48,9 +49,8 @@
     for (let i = 0; i < fieldValue.value.length; i++) {
       if (!fieldValue.value[i].attributes$jsEditor) {
         fieldValue.value[i].attributes$jsEditor = ["HIDE_LABEL"];
-      }
-      else // Add HIDE_LABEL if it's not there
-      {
+      } // Add HIDE_LABEL if it's not there
+      else {
         if (!fieldValue.value[i].attributes$jsEditor.includes("HIDE_LABEL")) {
           fieldValue.value[i].attributes$jsEditor.push("HIDE_LABEL");
         }
@@ -58,16 +58,41 @@
     }
   }
 
-  addHiddenLabelAttribute();
+  function addReadOnlyAttribute() {
+    for (let i = 0; i < fieldValue.value.length; i++) {
+      if (!fieldValue.value[i].attributes$jsEditor) {
+        fieldValue.value[i].attributes$jsEditor = ["READ_ONLY"];
+      } // Add READ_ONLY if it's not there
+      else {
+        if (!fieldValue.value[i].attributes$jsEditor.includes("READ_ONLY")) {
+          fieldValue.value[i].attributes$jsEditor.push("READ_ONLY");
+        }
+      }
+    }
+  }
+
+  $: read_only = false;
+
+  onMount(() => {
+    read_only = utils.getAttribute(fieldValue, "READ_ONLY");
+
+    addHiddenLabelAttribute();
+    if (read_only) addReadOnlyAttribute();
+  });
 </script>
 
 <div>
-  <Accordeon name="{fieldName}">
+  <Accordeon
+    name="{fieldName}"
+    class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
     <div slot="buttonLeft" class="flex flex-col items-center justify-center">
       <input
-        class="px-2 font-bold max-w-[4rem] text-slate-200 bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg"
+        class="px-2 font-bold max-w-[4rem] {!read_only
+          ? 'text-slate-200'
+          : 'text-slate-400'} bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg"
         type="number"
         on:change="{inputChange}"
+        disabled="{read_only}"
         value="{fieldValue.value.length}" />
     </div>
     {#each Object.entries(fieldValue.value) as [key, value], i (value)}
@@ -82,11 +107,13 @@
     <div class="flex flex-row items-center justify-end">
       <button
         on:click="{add}"
-        class="bg-slate-600 px-2 py-1 font-bold text-xl text-slate-200 shadow-lg rounded-xl my-2 mr-1 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
+        disabled="{read_only}"
+        class="bg-slate-600 px-2 py-1 font-bold text-xl {!read_only ? 'text-slate-200' : 'text-slate-400'} shadow-lg rounded-xl my-2 mr-1 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
         >+</button>
       <button
         on:click="{remove}"
-        class="bg-slate-600 px-2 py-1 font-extrabold text-xl text-slate-200 shadow-lg rounded-xl my-2 mr-2 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
+        disabled="{read_only}"
+        class="bg-slate-600 px-2 py-1 font-extrabold text-xl {!read_only ? 'text-slate-200' : 'text-slate-400'}shadow-lg rounded-xl my-2 mr-2 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
         >-</button>
     </div>
   </Accordeon>

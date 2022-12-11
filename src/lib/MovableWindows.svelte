@@ -70,7 +70,7 @@
   data-movable="movable"
   transition:scale
   bind:this="{dragElementNode}"
-  class="w-[25%] min-h-max bg-slate-500 absolute z-10 text-center rounded-md shadow-lg">
+  class="bg-slate-500 absolute z-10 text-center rounded-md shadow-lg">
   <WindowsTittleBar
     windowsName="{windowsName}"
     bind:node="{dragElementChild}"
