@@ -377,13 +377,16 @@ function checkIfValidEditorObject(obj) {
 export function convertToEditorObject(obj) {
     // Iterate object entries
     for (let [key, value] of Object.entries(obj)) {
-        if (checkIfValidEditorObject(value))
-        {
-            if(!value.hasOwnProperty("type$jsEditor"))
+        if (checkIfValidEditorObject(value)) {
+            if (!value.hasOwnProperty("type$jsEditor"))
                 value.type$jsEditor = getTypeAsString(value.value);
-            
+
+            let type = value.type$jsEditor;
+            if(type === "Object" || type === "Array")
+                obj[key].value = convertToEditorObject(value.value);
             continue;
         }
+
         // Switch statement
         switch (getTypeAsString(value)) {
             case "Number":
@@ -398,7 +401,7 @@ export function convertToEditorObject(obj) {
             case "Object":
                 obj[key] = { value: convertToEditorObject(value), type$jsEditor: "Object" };
                 break;
-                case "Array":
+            case "Array":
                 obj[key] = { value: convertToEditorObject(value), type$jsEditor: "Array" };
                 break;
             case "Function":
@@ -412,26 +415,43 @@ export function convertToEditorObject(obj) {
     return obj;
 }
 
-export function checkObjectHidden(obj)
-{
-    if(obj.hasOwnProperty("attributes$jsEditor"))
-    {
+export function convertToPureValues(obj) {
+    let newObj = objUtils.deepClone(obj);
+
+    // Iterate object entries
+    for (let [key, value] of Object.entries(newObj)) {
+        // Switch statement
+        switch (getTypeAsString(value.value)) {
+            case "Object":
+                newObj[key] = convertToPureValues(value.value);
+                break;
+            case "Array":
+                newObj[key] = convertToPureValues(value.value);
+                break;
+            default:
+                newObj[key] = value.value;
+                break;
+        }
+    }
+
+    return newObj;
+}
+
+export function checkObjectHidden(obj) {
+    if (obj.hasOwnProperty("attributes$jsEditor")) {
         return obj.attributes$jsEditor.includes("HIDDEN")
     }
     else return false;
 }
 
-export function checkLabelHidden(obj)
-{
-    if(obj.hasOwnProperty("attributes$jsEditor"))
-    {
+export function checkLabelHidden(obj) {
+    if (obj.hasOwnProperty("attributes$jsEditor")) {
         return obj.attributes$jsEditor.includes("HIDE_LABEL")
     }
     else return false;
 }
 
-export function getItemArrayName(obj, def)
-{
+export function getItemArrayName(obj, def) {
     // Check if obj is an object
     if (getTypeAsString(obj) !== "Object") return def + "";
     return processFieldName(obj[getFirstFieldName(obj)].value, def)

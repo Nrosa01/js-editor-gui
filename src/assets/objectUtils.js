@@ -69,3 +69,7 @@ export function makeReadOnly(obj) {
     delete obj[key];
   }
 }
+
+export function deepClone(obj) {
+  return deserializeJsAsText(serializeJsAsText(obj));
+}
