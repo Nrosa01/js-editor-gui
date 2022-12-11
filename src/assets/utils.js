@@ -368,3 +368,46 @@ function saveToFile(fileName, data) {
     }
         , 0);
 }
+
+function checkIfValidEditorObject(obj) {
+    // If the object contains a type$jsEditor property, it is a valid editor object
+    return obj.hasOwnProperty("type$jsEditor") || obj.hasOwnProperty("attributes$jsEditor");
+}
+
+export function convertToEditorObject(obj) {
+    // Iterate object entries
+    for (let [key, value] of Object.entries(obj)) {
+        if (checkIfValidEditorObject(value))
+        {
+            if(!value.hasOwnProperty("type$jsEditor"))
+                value.type$jsEditor = getTypeAsString(value.value);
+            
+            continue;
+        }
+        // Switch statement
+        switch (getTypeAsString(value)) {
+            case "Number":
+                obj[key] = { value: value, type$jsEditor: "Number" };
+                break;
+            case "String":
+                obj[key] = { value: value, type$jsEditor: "String" };
+                break;
+            case "Boolean":
+                obj[key] = { value: value, type$jsEditor: "Boolean" };
+                break;
+            case "Object":
+                convertToEditorObject(value);
+                obj[key] = { value: value, type$jsEditor: "Object" };
+                break;
+                case "Array":
+                convertToEditorObject(value);
+                obj[key] = { value: value, type$jsEditor: "Array" };
+                break;
+            case "Function":
+                obj[key] = { value: value, type$jsEditor: "Function" };
+                break;
+            default:
+                break;
+        }
+    }
+}
