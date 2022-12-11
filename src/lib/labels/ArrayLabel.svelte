@@ -7,36 +7,36 @@
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
   import FunctionLabel from "./FunctionLabel.svelte";
+  import { onMount } from "svelte";
 
   function add() {
     let obj = {};
     Object.assign(obj, objectModel);
-    utils.valuesToDefault(obj);
-    fieldValue = [...fieldValue, obj];
+    utils.valuesToDefault(obj.value);
+    fieldValue.value = [...fieldValue.value, obj];
   }
 
   function remove() {
-    fieldValue = fieldValue.slice(0, -1);
+    if (fieldValue.value.length > 0) fieldValue.value.length--;
   }
 
   function inputChange(event) {
     let value = parseInt(event.target.value);
-    while (value > Object.entries(fieldValue).length) add();
-    while (value < Object.entries(fieldValue).length) remove();
+    while (value > fieldValue.value.length) add();
+    while (value < fieldValue.value.length) remove();
   }
 
   export let parent;
   export let fieldName;
   export let fieldValue;
-  const objectModel = fieldValue[0];
-  Object.assign(objectModel, fieldValue[0]);
+  const objectModel = fieldValue.value[0];
+  Object.assign(objectModel, fieldValue.value[0]);
 
   const optionsMap = {
     String: TextLabel,
     Number: NumLabel,
     Boolean: BoolLabel,
     Null: TextLabel,
-    Array: this,
     Object: ObjectLabel,
     Function: FunctionLabel,
   };
@@ -49,15 +49,15 @@
         class="px-2 font-bold max-w-[4rem] text-slate-200 bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg"
         type="number"
         on:change="{inputChange}"
-        value="{Object.entries(fieldValue).length}" />
+        value="{fieldValue.value.length}" />
     </div>
     {#each Object.entries(fieldValue.value) as [key, value], i (value)}
       <div class="flex flex-row" transition:slide|local>
         <svelte:component
           this="{optionsMap[utils.getTypeAsString(value)]}"
-          parent="{fieldValue}"
+          parent="{fieldValue.value}"
           fieldName="{key}"
-          bind:fieldValue="{fieldValue[key]}" />
+          bind:fieldValue="{fieldValue.value[key]}" />
       </div>
     {/each}
     <div class="flex flex-row items-center justify-end">

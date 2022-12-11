@@ -22,8 +22,6 @@
     Object: ObjectLabel,
     Function: FunctionLabel,
   };
-
-  console.log("ObjectLabel", fieldName, fieldValue)
 </script>
 
 <Accordeon name="{fieldName}" bind:expanded="{expanded}">
