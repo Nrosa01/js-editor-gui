@@ -5,7 +5,7 @@
   export let parent;
 
   function call() {
-    fieldValue(parent, api);
+    fieldValue.value(parent, api);
   }
 </script>
 

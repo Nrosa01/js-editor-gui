@@ -34,7 +34,7 @@
         this="{optionsMap[value.type$jsEditor]}"
         parent="{fieldValue}"
         fieldName="{key}"
-        fieldValue="{fieldValue[key]}" />
+        bind:fieldValue="{fieldValue[key]}" />
     {/if}
   {/each}
 </Accordeon>

@@ -51,12 +51,12 @@
         on:change="{inputChange}"
         value="{Object.entries(fieldValue).length}" />
     </div>
-    {#each Object.entries(fieldValue) as [key, value], i (value)}
+    {#each Object.entries(fieldValue.value) as [key, value], i (value)}
       <div class="flex flex-row" transition:slide|local>
         <svelte:component
           this="{optionsMap[utils.getTypeAsString(value)]}"
-          bind:parent="{fieldValue}"
-          bind:fieldName="{key}"
+          parent="{fieldValue}"
+          fieldName="{key}"
           bind:fieldValue="{fieldValue[key]}" />
       </div>
     {/each}
