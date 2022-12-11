@@ -9,13 +9,13 @@
 
   let container;
 
-  localStorage.clear();
+  //localStorage.clear();
   const addObj = (obj) => {
     data.jsItems = [...data.jsItems, obj];
   };
 
   let data = utils.load();
-  data.jsItems = []
+  //data.jsItems = []
 
   $: {
     // Make sure scale is no less than 0.1
@@ -110,6 +110,9 @@
     
     for (let i = 0; i < data.htmlItems.length; i++) {
       const element = data.htmlItems[i];
+
+      if(element === undefined || element === null) continue;
+
       const style = window.getComputedStyle(element);
       const width = parseInt(style.width);
       const height = parseInt(style.height);
