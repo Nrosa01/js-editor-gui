@@ -33,8 +33,8 @@
       <svelte:component
         this="{optionsMap[value.type$jsEditor]}"
         parent="{fieldValue}"
-        bind:fieldName="{key}"
-        bind:fieldValue="{fieldValue[key]}" />
+        fieldName="{key}"
+        fieldValue="{fieldValue[key]}" />
     {/if}
   {/each}
 </Accordeon>

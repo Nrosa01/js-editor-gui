@@ -1,5 +1,6 @@
 <script>
-  let labelDefault = "Titulo";
+  import { processFieldName } from "../../assets/utils.js";
+
   export let parent;
   export let fieldValue;
   export let fieldName = "Name";
@@ -11,11 +12,11 @@
 
 <div
   class="relative grid grid-cols-3 w-full items-center bg-slate-500 text-slate-200 font-bold pl-4">
-  <h3>{fieldName}</h3>
+  <h3>{processFieldName(fieldName)}</h3>
   <input
     readonly="{isReadonly}"
     bind:value="{fieldValue.value}"
     type="text"
     class="{inputClasses} "
-    placeholder="{labelDefault}" />
+    placeholder="{fieldValue?.inputLabel ?? 'Introduce texto'}" />
 </div>
