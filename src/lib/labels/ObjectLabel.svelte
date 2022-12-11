@@ -19,22 +19,24 @@
     Boolean: BoolLabel,
     Null: TextLabel,
     Array: ArrayLabel,
-    Object: this,
+    Object: ObjectLabel,
     Function: FunctionLabel,
   };
+
+  console.log("ObjectLabel", fieldName, fieldValue)
 </script>
 
 <Accordeon name="{fieldName}" bind:expanded="{expanded}">
   <div slot="buttonRight" class="flex flex-row">
     <slot />
   </div>
-  {#each Object.entries(fieldValue) as [key, value], i}
+  {#each Object.entries(fieldValue.value) as [key, value], i}
     {#if optionsMap[value.type$jsEditor] && !utils.checkObjectHidden(value)}
       <svelte:component
         this="{optionsMap[value.type$jsEditor]}"
         parent="{fieldValue}"
         fieldName="{key}"
-        bind:fieldValue="{fieldValue[key]}" />
+        bind:fieldValue="{fieldValue.value[key]}" />
     {/if}
   {/each}
 </Accordeon>

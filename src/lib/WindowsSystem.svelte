@@ -9,11 +9,10 @@
 
   let container;
 
-  //localStorage.clear();
+  localStorage.clear();
   const addObj = (obj) => {
-    utils.convertToEditorObject(obj)
-    // console.log(obj)
-    data.jsItems = [...data.jsItems, utils.convertToEditorObject(obj)];
+    let item = utils.convertToEditorObject({obj}).obj
+    data.jsItems = [...data.jsItems, item];
   };
 
   let data = utils.load();
@@ -166,13 +165,13 @@
       on:close="{close}"
       id="{i}"
       bind:dragElementNode="{data.htmlItems[i]}"
-      windowsName="{item.WIN_TITLE?.value ?? `Windows ${i}`}"
+      windowsName="{item.value.WIN_TITLE?.value ?? `Windows ${i}`}"
       attributes="{data.htmlItemsData[i]}">
       <ObjectLabel
         expanded
+        parent="{data.jsItems}" 
         fieldName=""
-        bind:fieldValue="{item}"
-        parent="{data.jsItems}" />
+        bind:fieldValue="{item}"/>
     </MovableWindows>
   {/each}
 </div>
