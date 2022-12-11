@@ -9,7 +9,7 @@
 
   let container;
 
-  localStorage.clear();
+  //localStorage.clear();
   const addObj = (obj) => {
     let item = utils.convertToEditorObject({obj}).obj
     console.log(item)

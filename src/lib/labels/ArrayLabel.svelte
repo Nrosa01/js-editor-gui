@@ -7,7 +7,7 @@
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
   import FunctionLabel from "./FunctionLabel.svelte";
-  import { onMount } from "svelte";
+  import ArrayLabel from "./ArrayLabel.svelte";
 
   function add() {
     let obj = {};
@@ -38,6 +38,7 @@
     Boolean: BoolLabel,
     Null: TextLabel,
     Object: ObjectLabel,
+    Array: ArrayLabel,
     Function: FunctionLabel,
   };
 </script>
@@ -54,9 +55,9 @@
     {#each Object.entries(fieldValue.value) as [key, value], i (value)}
       <div class="flex flex-row" transition:slide|local>
         <svelte:component
-          this="{optionsMap[utils.getTypeAsString(value)]}"
+          this="{optionsMap[value.type$jsEditor]}"
           parent="{fieldValue.value}"
-          fieldName="{key}"
+          fieldName="{utils.getItemArrayName(value.value, i)}"
           bind:fieldValue="{fieldValue.value[key]}" />
       </div>
     {/each}

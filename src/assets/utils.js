@@ -420,3 +420,10 @@ export function checkObjectHidden(obj)
     }
     else return false;
 }
+
+export function getItemArrayName(obj, def)
+{
+    // Check if obj is an object
+    if (getTypeAsString(obj) !== "Object") return def + "";
+    return processFieldName(obj[getFirstFieldName(obj)].value, def)
+}
