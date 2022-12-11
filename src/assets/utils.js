@@ -371,7 +371,7 @@ function saveToFile(fileName, data) {
 
 function checkIfValidEditorObject(obj) {
     // If the object contains a type$jsEditor property, it is a valid editor object
-    return obj.hasOwnProperty("type$jsEditor") || obj.hasOwnProperty("attributes$jsEditor");
+    return obj !== null && (obj.hasOwnProperty("type$jsEditor") || obj.hasOwnProperty("attributes$jsEditor"));
 }
 
 export function convertToEditorObject(obj) {
@@ -407,6 +407,8 @@ export function convertToEditorObject(obj) {
             case "Function":
                 obj[key] = { value: value, type$jsEditor: "Function" };
                 break;
+            case "Null":
+                obj[key] = { value: {}, type$jsEditor: "String" };
             default:
                 break;
         }
