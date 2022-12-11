@@ -1,13 +1,20 @@
 <script>
+    import { onMount } from "svelte";
   import { scale } from "svelte/transition";
   
   export let parent;
   export let fieldValue;
   export let fieldName = "Name";
 
+  onMount(() =>
+  {
+    console.log("BoolLabel mounted");
+    console.log(fieldValue)
+  })
+
   let inputClasses = "border rounded-md focus:outline-none focus:ring-1 box-content px-2 py-1 my-1 mx-2 read-only:text-slate-400 col-span-2 first-letter:px-2 font-bold text-slate-200 bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg w-fit my-1.5";
 
-  $: checkedClasses = fieldValue ? "scale-100" : "scale-0";
+  $: checkedClasses = fieldValue.value ? "scale-100" : "scale-0";
 </script>
 
 <div
@@ -15,7 +22,7 @@
   <h3>{fieldName}</h3>
   <span
     on:click="{() => {
-      fieldValue = !fieldValue;
+      fieldValue.value = !fieldValue.value;
     }}"
     on:keydown
     class="{inputClasses} flex flex-col items-center justify-center py-0 px-0 m-0 hover:brightness-75">

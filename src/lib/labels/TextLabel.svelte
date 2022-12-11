@@ -14,7 +14,7 @@
   <h3>{fieldName}</h3>
   <input
     readonly="{isReadonly}"
-    bind:value="{fieldValue}"
+    bind:value="{fieldValue.value}"
     type="text"
     class="{inputClasses} "
     placeholder="{labelDefault}" />

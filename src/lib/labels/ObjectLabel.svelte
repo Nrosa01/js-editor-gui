@@ -29,14 +29,12 @@
     <slot />
   </div>
   {#each Object.entries(fieldValue) as [key, value], i}
-    {#if key !== "HIDDEN" && key !== "WIN_TITLE"}
-      {#if optionsMap[utils.getTypeAsString(value)]}
-        <svelte:component
-          this="{optionsMap[utils.getTypeAsString(value)]}"
-          parent="{fieldValue}"
-          bind:fieldName="{key}"
-          bind:fieldValue="{fieldValue[key]}" />
-      {/if}
+    {#if optionsMap[value.type$jsEditor] && !utils.checkObjectHidden(value)}
+      <svelte:component
+        this="{optionsMap[value.type$jsEditor]}"
+        parent="{fieldValue}"
+        bind:fieldName="{key}"
+        bind:fieldValue="{fieldValue[key]}" />
     {/if}
   {/each}
 </Accordeon>

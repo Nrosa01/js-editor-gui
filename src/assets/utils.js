@@ -411,3 +411,12 @@ export function convertToEditorObject(obj) {
 
     return obj;
 }
+
+export function checkObjectHidden(obj)
+{
+    if(obj.hasOwnProperty("attributes$jsEditor"))
+    {
+        return obj.attributes$jsEditor.includes("HIDDEN")
+    }
+    else return false;
+}

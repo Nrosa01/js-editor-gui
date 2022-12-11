@@ -11,7 +11,9 @@
 
   //localStorage.clear();
   const addObj = (obj) => {
-    data.jsItems = [...data.jsItems, obj];
+    utils.convertToEditorObject(obj)
+    console.log(obj)
+    data.jsItems = [...data.jsItems, utils.convertToEditorObject(obj)];
   };
 
   let data = utils.load();
@@ -32,7 +34,7 @@
       typeof loadedFile === "object" &&
       loadedFile.default !== undefined
     )
-      data.jsItems = [...data.jsItems, loadedFile.default];
+      addObj(loadedFile.default);
   };
 
   const loadConfig = async () => {
@@ -107,11 +109,11 @@
 
   function getHTMLItemsData() {
     data.htmlItemsData = [];
-    
+
     for (let i = 0; i < data.htmlItems.length; i++) {
       const element = data.htmlItems[i];
 
-      if(element === undefined || element === null) continue;
+      if (element === undefined || element === null) continue;
 
       const style = window.getComputedStyle(element);
       const width = parseInt(style.width);
@@ -164,11 +166,15 @@
       on:close="{close}"
       id="{i}"
       bind:dragElementNode="{data.htmlItems[i]}"
-      windowsName="{item.WIN_TITLE ?? `Windows ${i}`}"
+      windowsName="{item.WIN_TITLE?.value ?? `Windows ${i}`}"
       attributes="{data.htmlItemsData[i]}">
-      <ObjectLabel expanded fieldName="" bind:fieldValue="{item}" parent="{data.jsItems}" />
+      <ObjectLabel
+        expanded
+        fieldName=""
+        bind:fieldValue="{item}"
+        parent="{data.jsItems}" />
     </MovableWindows>
-    {/each}
-  </div>
-  
-  <!-- windowsName="{item.WIN_TITLE ?? `Windows ${i}`}" -->
+  {/each}
+</div>
+
+<!-- windowsName="{item.WIN_TITLE ?? `Windows ${i}`}" -->
