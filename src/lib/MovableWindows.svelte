@@ -38,6 +38,7 @@
     // Set attributes
     for (const [key, value] of Object.entries(attributes)) {
       dragElementNode.style[key.toLowerCase()] = value + "px";
+      slot.style[key.toLowerCase()] = value + "px";
     }
 
     dragElementNode.style.zIndex = attributes.zIndex;
