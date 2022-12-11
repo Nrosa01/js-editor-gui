@@ -2,11 +2,12 @@
   import { onMount } from "svelte";
   import { scale } from "svelte/transition";
 
-  export let labelDefault = "Titulo";
-  export let type = "text";
+  let labelDefault = "Titulo";
+  let type = "text";
+  export let parent;
   export let fieldValue;
   export let fieldName = "Name";
-  export let attributes;
+  let attributes;
   let input;
 
   let inputClasses = "";

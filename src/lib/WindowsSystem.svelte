@@ -1,5 +1,5 @@
 <script>
-  import ObjectLabel from "./ObjectLabel.svelte";
+  import ObjectLabel from "./labels/ObjectLabel.svelte";
   import MovableWindows from "./MovableWindows.svelte";
   import * as utils from "../assets/utils.js";
   import { onMount } from "svelte";
@@ -9,12 +9,13 @@
 
   let container;
 
-  //localStorage.clear();
+  localStorage.clear();
   const addObj = (obj) => {
     data.jsItems = [...data.jsItems, obj];
   };
 
   let data = utils.load();
+  data.jsItems = []
 
   $: {
     // Make sure scale is no less than 0.1
@@ -161,7 +162,9 @@
       bind:dragElementNode="{data.htmlItems[i]}"
       windowsName="{item.WIN_TITLE ?? `Windows ${i}`}"
       attributes="{data.htmlItemsData[i]}">
-      <ObjectLabel expanded fieldName="" bind:fieldValue="{item}" />
+      <ObjectLabel expanded fieldName="" bind:fieldValue="{item}" parent="{data.jsItems}" />
     </MovableWindows>
-  {/each}
-</div>
+    {/each}
+  </div>
+  
+  <!-- windowsName="{item.WIN_TITLE ?? `Windows ${i}`}" -->

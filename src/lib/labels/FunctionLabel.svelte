@@ -1,11 +1,11 @@
 <script>
-  import { api } from "../assets/api.js";
+  import { api } from "../../assets/api.js";
   export let fieldName = "Button";
-  export let parameter;
-  export let func;
+  export let fieldValue;
+  // export let parameter;
 
   function call() {
-    func(parameter, api);
+    // fieldValue(parameter, api);
   }
 </script>
 

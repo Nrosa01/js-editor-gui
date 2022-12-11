@@ -21,13 +21,6 @@ export function processFieldName(fieldName, defaultValue) {
         result += char;
     }
 
-    // If the text contains $, we want to take the text from the start to the $ and add it to the result withouth the $
-    if (result.includes('$')) {
-        const indexOf$ = result.indexOf('$');
-        const textBefore$ = result.substring(0, indexOf$);
-        return textBefore$;
-    }
-
     if (result === "")
         return defaultValue + "" ?? "";
 

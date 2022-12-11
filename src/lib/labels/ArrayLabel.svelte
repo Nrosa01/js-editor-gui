@@ -1,6 +1,6 @@
-<script>
-  import Accordeon from "./Accordeon.svelte";
-  import * as utils from "../assets/utils.js";
+<!-- <script>
+  import Accordeon from "../Accordeon.svelte";
+  import * as utils from "../../assets/utils.js";
   import ObjectLabel from "./ObjectLabel.svelte";
   import { slide } from "svelte/transition";
 
@@ -51,4 +51,4 @@
         >-</button>
     </div>
   </Accordeon>
-</div>
+</div> -->
