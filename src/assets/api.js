@@ -6,8 +6,10 @@ import * as utils from './utils.js'
 export let api = {
     serializeJsAsText: objUtils.serializeJsAsText,
     deserializeJsAsText: objUtils.deserializeJsAsText,
-    makeReadOnly: objUtils.makeReadOnly,
+    makeReadOnly: utils.makeReadOnly,
+    makeHidden: utils.makeHidden,
     convertToPureValues: utils.convertToPureValues,
+    convertToEditorObject: utils.convertToEditorObject,
     add: () => {},
     addItem: () => {},
     clear: () => {},

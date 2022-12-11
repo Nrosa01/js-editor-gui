@@ -12,7 +12,7 @@
   //localStorage.clear();
   const addObj = (obj) => {
     let item = utils.convertToEditorObject({obj}).obj
-    //console.log(item)
+    console.log(item)
     data.jsItems = [...data.jsItems, item];
   };
 

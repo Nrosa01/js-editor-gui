@@ -60,16 +60,6 @@ export function deserializeJsAsText(text) {
   return ObjectToStringParser.parse(text)
 }
 
-export function makeReadOnly(obj) {
-  for (let key in obj) {
-    if (key.indexOf("$RO") !== -1) continue;
-
-    let newKey = key + "$RO";
-    obj[newKey] = obj[key];
-    delete obj[key];
-  }
-}
-
 export function deepClone(obj) {
   return deserializeJsAsText(serializeJsAsText(obj));
 }

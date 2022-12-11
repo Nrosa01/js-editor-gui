@@ -382,7 +382,7 @@ export function convertToEditorObject(obj) {
                 value.type$jsEditor = getTypeAsString(value.value);
 
             let type = value.type$jsEditor;
-            if(type === "Object" || type === "Array")
+            if (type === "Object" || type === "Array")
                 obj[key].value = convertToEditorObject(value.value);
             continue;
         }
@@ -455,4 +455,35 @@ export function getItemArrayName(obj, def) {
     // Check if obj is an object
     if (getTypeAsString(obj) !== "Object") return def + "";
     return processFieldName(obj[getFirstFieldName(obj)].value, def)
+}
+
+function addAttributeToJsEditorObject(obj, attribute) {
+    // Check if it has the attributes property
+    if (!obj.hasOwnProperty("attributes$jsEditor")) {
+        obj.attributes$jsEditor = [];
+    }
+
+    // Check if it has the attribute
+    if (!obj.attributes$jsEditor.includes(attribute)) {
+        obj.attributes$jsEditor.push(attribute);
+    }
+}
+
+export function makeHidden(obj) {
+    
+    // Convert to editor object
+    obj = convertToEditorObject({obj}).obj;
+
+    addAttributeToJsEditorObject(obj, "HIDDEN");
+
+    return obj;
+}
+
+export function makeReadOnly(obj) {
+    // Convert to editor object
+    obj = convertToEditorObject({obj}).obj;
+
+    addAttributeToJsEditorObject(obj, "READ_ONLY");
+
+    return obj;
 }
