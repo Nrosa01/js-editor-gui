@@ -107,6 +107,7 @@
 
   function getHTMLItemsData() {
     data.htmlItemsData = [];
+    
     for (let i = 0; i < data.htmlItems.length; i++) {
       const element = data.htmlItems[i];
       const style = window.getComputedStyle(element);

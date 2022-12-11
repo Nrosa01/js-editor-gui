@@ -1,7 +1,6 @@
 <script>
   import Accordeon from "../Accordeon.svelte";
   import ArrayLabel from "./ArrayLabel.svelte";
-  import GenericLabel from "./GenericLabel.svelte";
   import * as utils from "../../assets/utils.js";
   import FunctionLabel from "./FunctionLabel.svelte";
   import ObjectLabel from "./ObjectLabel.svelte";
@@ -9,6 +8,7 @@
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
 
+  export let parent;
   export let fieldName;
   export let fieldValue;
   export let expanded = false;
@@ -33,6 +33,7 @@
       {#if optionsMap[utils.getTypeAsString(value)]}
         <svelte:component
           this="{optionsMap[utils.getTypeAsString(value)]}"
+          parent="{fieldValue}"
           bind:fieldName="{key}"
           bind:fieldValue="{value}" />
       {/if}

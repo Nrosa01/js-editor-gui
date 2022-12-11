@@ -1,6 +1,7 @@
 <script>
   import { scale } from "svelte/transition";
-
+  
+  export let parent;
   export let fieldValue;
   export let fieldName = "Name";
 

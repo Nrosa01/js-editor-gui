@@ -1,5 +1,6 @@
 <script>
   let labelDefault = "Titulo";
+  export let parent;
   export let fieldValue;
   export let fieldName = "Name";
   let isReadonly = false;
