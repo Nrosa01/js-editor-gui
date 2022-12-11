@@ -84,9 +84,21 @@ export function dragElement(elmnt, child) {
     if (child) {
         // if present, the header is where you move the DIV from:
         child.onmousedown = dragMouseDown;
+        child.onmouseover = onHover;
+        child.onmouseout = onHoverOut;
     } else {
         // otherwise, move the DIV from anywhere inside the DIV:
         elmnt.onmousedown = dragMouseDown;
+        elmnt.onmouseover = onHover;
+        elmnt.onmouseout = onHoverOut;
+    }
+
+    function onHover(e) {
+        elmnt.style.cursor = 'move';
+    }
+
+    function onHoverOut(e) {
+        elmnt.style.cursor = 'default';
     }
 
     function dragMouseDown(e) {
@@ -98,11 +110,6 @@ export function dragElement(elmnt, child) {
         document.onmouseup = closeDragElement;
         // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
-
-        // If this element overlaps with another one that has position absolute, then swap their z-index
-        // select all elements with class absolute
-        elements = document.querySelectorAll('.absolute');
-        moveToTop(elmnt, elements);
     }
 
     function elementDrag(e) {
@@ -120,10 +127,10 @@ export function dragElement(elmnt, child) {
             scaleMultiplier = 1 / scaleMultiplier;
         }
 
-        pos1 = pos3 -  e.clientX;
-        pos2 = pos4 -  e.clientY;
-        pos3 =  e.clientX;
-        pos4 =  e.clientY;
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
 
         // set the element's new position:
         elmnt.style.top = (elmnt.offsetTop - pos2 * scaleMultiplier) + "px";
@@ -167,6 +174,73 @@ export function dragElement(elmnt, child) {
         // const maxYPos = parentHeight - parentPaddingBottom - elementHeight - elementMarginBottom;
         // const currentTop = parseInt(elmnt.style.top);
         // elmnt.style.top = Clamp(currentTop, minYPos, maxYPos) + "px";
+    }
+
+    function closeDragElement(e) {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+export function resizeElement(elmnt, anchor) {
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    let elements = document.querySelectorAll('.absolute');
+    // otherwise, move the DIV from anywhere inside the DIV:
+    anchor.onmousedown = dragMouseDown;
+    anchor.onmouseover = onHover;
+    anchor.onmouseout = onHoverOut;
+
+    function onHover(e) {
+        elmnt.style.cursor = 'se-resize';
+    }
+
+    function onHoverOut(e) {
+        elmnt.style.cursor = 'default';
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+
+        // If this element overlaps with another one that has position absolute, then swap their z-index
+        // select all elements with class absolute
+        elements = document.querySelectorAll('.absolute');
+        moveToTop(elmnt, elements);
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+
+        // calculate the new cursor position:
+        const parent = elmnt.parentElement;
+
+        let scaleMultiplier = 1;
+        // Parent might have a scale, so we need to take it into account
+        if (parent.style.transform) {
+            const scale = parent.style.transform.split('(')[1].split(')')[0].split(',')[0];
+            scaleMultiplier = parseFloat(scale);
+            scaleMultiplier = 1 / scaleMultiplier;
+        }
+
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        // set the element's new width and height:
+        elmnt.style.width = (elmnt.offsetWidth - pos1 * scaleMultiplier) + "px";
+        elmnt.style.height = (elmnt.offsetHeight - pos2 * scaleMultiplier) + "px";
     }
 
     function closeDragElement(e) {
