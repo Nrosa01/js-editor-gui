@@ -29,6 +29,7 @@
   export let parent;
   export let fieldName;
   export let fieldValue;
+  
   const objectModel = fieldValue.value[0];
   Object.assign(objectModel, fieldValue.value[0]);
 
@@ -41,6 +42,23 @@
     Array: ArrayLabel,
     Function: FunctionLabel,
   };
+
+  // Iterate all values, if they don't have attributes$jsonEditor, add them
+  function addHiddenLabelAttribute() {
+    for (let i = 0; i < fieldValue.value.length; i++) {
+      if (!fieldValue.value[i].attributes$jsEditor) {
+        fieldValue.value[i].attributes$jsEditor = ["HIDE_LABEL"];
+      }
+      else // Add HIDE_LABEL if it's not there
+      {
+        if (!fieldValue.value[i].attributes$jsEditor.includes("HIDE_LABEL")) {
+          fieldValue.value[i].attributes$jsEditor.push("HIDE_LABEL");
+        }
+      }
+    }
+  }
+
+  addHiddenLabelAttribute();
 </script>
 
 <div>

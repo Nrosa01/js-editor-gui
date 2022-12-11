@@ -421,6 +421,15 @@ export function checkObjectHidden(obj)
     else return false;
 }
 
+export function checkLabelHidden(obj)
+{
+    if(obj.hasOwnProperty("attributes$jsEditor"))
+    {
+        return obj.attributes$jsEditor.includes("HIDE_LABEL")
+    }
+    else return false;
+}
+
 export function getItemArrayName(obj, def)
 {
     // Check if obj is an object
