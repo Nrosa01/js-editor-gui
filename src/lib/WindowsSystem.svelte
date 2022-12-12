@@ -11,10 +11,29 @@
 
   //localStorage.clear();
   const addObj = (obj) => {
-    let item = utils.convertToEditorObject({obj}).obj
-    console.log(item)
+    let item = utils.convertToEditorObject({ obj }).obj;
+    console.log("Adding item");
+    console.log(data);
     data.jsItems = [...data.jsItems, item];
+    data.htmlItems.length = data.jsItems.length;
+    data.htmlItemsData.length = data.jsItems.length;
+    console.log(data);
+    console.log("-----------------");
   };
+
+  function close(event) {
+    let id = event.detail;
+
+    console.log("Closing item with id: " + id);
+    console.log(data);
+
+    data.jsItems = data.jsItems.filter((_, i) => i !== id);
+    data.htmlItems.length = data.jsItems.length;
+    data.htmlItemsData.length = data.jsItems.length;
+
+    console.log(data);
+    console.log("-----------------");
+  }
 
   let data = utils.load();
   //data.jsItems = []
@@ -64,6 +83,12 @@
       }
       data = loadedFile;
     }
+
+    data.htmlItemsData = loadedFile.htmlItemsData;
+
+    console.log("Loaded config");
+    console.log(data);
+    console.log("-----------------");
   };
 
   onMount(() => {
@@ -101,20 +126,25 @@
     );
 
     // Set autosave every 5 seconds
-    setInterval(() => {
-      getHTMLItemsData();
-      utils.save(data);
-    }, 5000);
+    // setInterval(() => {
+    //   getHTMLItemsData();
+    //   utils.save(data);
+    // }, 5000);
+
+    console.log("On mount");
+    console.log(data);
   });
 
   function getHTMLItemsData() {
+    console.log("Getting HTML items data")
+    console.log(data.htmlItems)
     data.htmlItemsData = [];
-
+    
     for (let i = 0; i < data.htmlItems.length; i++) {
       const element = data.htmlItems[i];
-
+      
       if (element === undefined || element === null) continue;
-
+      
       const style = window.getComputedStyle(element);
       const width = parseInt(style.width);
       const height = parseInt(style.height);
@@ -123,7 +153,8 @@
       const zIndex = parseInt(style.zIndex);
       data.htmlItemsData.push({ width, height, left, top, zIndex });
     }
-
+    
+    console.log("Returning HTML items data")
     return data.htmlItemsData;
   }
 
@@ -134,14 +165,6 @@
     getHTMLItemsData();
     utils.save(data);
   };
-
-  function close(event) {
-    let id = event.detail;
-
-    data.htmlItemsData = data.htmlItemsData.filter((_, i) => i !== id);
-    data.htmlItems = data.htmlItems.filter((_, i) => i !== id);
-    data.jsItems = data.jsItems.filter((_, i) => i !== id);
-  }
 
   // Api functions
   addToApi("add", addObj);
@@ -157,6 +180,7 @@
   addToApi("setScale", (scale) => (data.scale = scale));
   addToApi("saveToFile", () => utils.saveConfigToFile(data, "config.json"));
   addToApi("loadFromFile", loadConfig);
+  addToApi("updateView", () => {data = data})
 </script>
 
 <Mover items="{data.htmlItems}" scale="{data.scale}" />
@@ -166,13 +190,13 @@
       on:close="{close}"
       id="{i}"
       bind:dragElementNode="{data.htmlItems[i]}"
-      windowsName="{item.value.WIN_TITLE?.value ?? `Windows ${i}`}"
+      windowsName="{item.value.WIN_TITLE?.value + ` ${i}` ?? `Windows ${i}`}"
       attributes="{data.htmlItemsData[i]}">
       <ObjectLabel
         expanded
-        parent="{data.jsItems}" 
+        parent="{data.jsItems}"
         fieldName=""
-        bind:fieldValue="{item}"/>
+        bind:fieldValue="{item}" />
     </MovableWindows>
   {/each}
 </div>

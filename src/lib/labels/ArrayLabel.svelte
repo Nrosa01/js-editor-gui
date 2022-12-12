@@ -9,6 +9,7 @@
   import FunctionLabel from "./FunctionLabel.svelte";
   import ArrayLabel from "./ArrayLabel.svelte";
   import { onMount } from "svelte";
+  import { getAttribute } from "../../assets/utils.js";
 
   function add() {
     let obj = {};
@@ -74,10 +75,16 @@
   let read_only = false;
   let expanded = false;
 
+  $:
+  {
+    if(fieldValue !== null)
+    {
+      read_only = getAttribute(fieldValue, "READ_ONLY");
+      expanded = getAttribute(fieldValue, "EXPANDED");
+    }
+  }
+  
   onMount(() => {
-    read_only = utils.getAttribute(fieldValue, "READ_ONLY");
-    expanded = utils.getAttribute(fieldValue, "EXPANDED");
-
     addHiddenLabelAttribute();
     if (read_only) addReadOnlyAttribute();
   });

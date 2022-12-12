@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from "svelte";
   import { processFieldName } from "../../assets/utils.js";
   import { checkLabelHidden } from "../../assets/utils.js";
   import { getAttribute } from "../../assets/utils.js";
@@ -10,10 +9,14 @@
   let read_only = false;
   let hiddenLabel = false;
 
-  onMount(() => {
-    read_only = getAttribute(fieldValue, "READ_ONLY");
-    hiddenLabel = checkLabelHidden(fieldValue);
-  });
+  $:
+  {
+    if(fieldValue !== null)
+    {
+      read_only = getAttribute(fieldValue, "READ_ONLY");
+      hiddenLabel = checkLabelHidden(fieldValue);
+    }
+  }
 
   let inputClasses =
     "border rounded-md focus:outline-none focus:ring-1 box-content px-2 py-1 my-1 mx-2 read-only:text-slate-400 first-letter:px-2 font-bold text-slate-200 bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg col-span-2";

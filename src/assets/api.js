@@ -18,7 +18,8 @@ export let api = {
     getScale: () => {},
     setScale: () => {},
     saveToFile: () => {},
-    loadFromFile: () => {}
+    loadFromFile: () => {},
+    updateView: () => {},
 }
 
 export function addToApi(fieldName, fieldValue) {
