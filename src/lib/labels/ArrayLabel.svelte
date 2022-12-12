@@ -71,18 +71,27 @@
     }
   }
 
-  $: read_only = false;
+  let read_only = false;
+  let expanded = false;
 
   onMount(() => {
     read_only = utils.getAttribute(fieldValue, "READ_ONLY");
+    expanded = utils.getAttribute(fieldValue, "EXPANDED");
 
     addHiddenLabelAttribute();
     if (read_only) addReadOnlyAttribute();
   });
+
+  function onToggle(event) {
+    if (event.detail) utils.addAttribute(fieldValue, "EXPANDED");
+    else utils.removeAttribute(fieldValue, "EXPANDED");
+  }
 </script>
 
 <div>
   <Accordeon
+    on:toggle="{onToggle}"
+    expanded="{expanded}"
     name="{fieldName}"
     class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
     <div slot="buttonLeft" class="flex flex-col items-center justify-center">
@@ -108,12 +117,16 @@
       <button
         on:click="{add}"
         disabled="{read_only}"
-        class="bg-slate-600 px-2 py-1 font-bold text-xl {!read_only ? 'text-slate-200' : 'text-slate-400'} shadow-lg rounded-xl my-2 mr-1 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
+        class="bg-slate-600 px-2 py-1 font-bold text-xl {!read_only
+          ? 'text-slate-200'
+          : 'text-slate-400'} shadow-lg rounded-xl my-2 mr-1 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
         >+</button>
       <button
         on:click="{remove}"
         disabled="{read_only}"
-        class="bg-slate-600 px-2 py-1 font-extrabold text-xl {!read_only ? 'text-slate-200' : 'text-slate-400'}shadow-lg rounded-xl my-2 mr-2 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
+        class="bg-slate-600 px-2 py-1 font-extrabold text-xl {!read_only
+          ? 'text-slate-200'
+          : 'text-slate-400'}shadow-lg rounded-xl my-2 mr-2 hover:bg-slate-700 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800"
         >-</button>
     </div>
   </Accordeon>

@@ -7,6 +7,7 @@
   import TextLabel from "./TextLabel.svelte";
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
+  import { onMount } from "svelte";
 
   export let parent;
   export let fieldName;
@@ -22,9 +23,18 @@
     Object: ObjectLabel,
     Function: FunctionLabel,
   };
+
+  onMount(() => {
+    expanded = expanded || utils.getAttribute(fieldValue, "EXPANDED");
+  });
+
+  function onToggle(event) {
+    if (event.detail) utils.addAttribute(fieldValue, "EXPANDED");
+    else utils.removeAttribute(fieldValue, "EXPANDED");
+  }
 </script>
 
-<Accordeon name="{fieldName}" bind:expanded="{expanded}">
+<Accordeon on:toggle="{onToggle}" expanded="{expanded}" name="{fieldName}">
   <div slot="buttonRight" class="flex flex-row">
     <slot />
   </div>

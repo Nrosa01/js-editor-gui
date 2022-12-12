@@ -478,10 +478,22 @@ function addAttributeToJsEditorObject(obj, attribute) {
     }
 }
 
+function deleteAttributeFromJsEditorObject(obj, attribute) {
+    // Check if it has the attributes property
+    if (!obj.hasOwnProperty("attributes$jsEditor")) {
+        obj.attributes$jsEditor = [];
+    }
+
+    // Check if it has the attribute
+    if (obj.attributes$jsEditor.includes(attribute)) {
+        obj.attributes$jsEditor.splice(obj.attributes$jsEditor.indexOf(attribute), 1);
+    }
+}
+
 export function makeHidden(obj) {
-    
+
     // Convert to editor object
-    obj = convertToEditorObject({obj}).obj;
+    obj = convertToEditorObject({ obj }).obj;
 
     addAttributeToJsEditorObject(obj, "HIDDEN");
 
@@ -490,9 +502,27 @@ export function makeHidden(obj) {
 
 export function makeReadOnly(obj) {
     // Convert to editor object
-    obj = convertToEditorObject({obj}).obj;
+    obj = convertToEditorObject({ obj }).obj;
 
     addAttributeToJsEditorObject(obj, "READ_ONLY");
+
+    return obj;
+}
+
+export function addAttribute(obj, attribute) {
+    // Convert to editor object
+    obj = convertToEditorObject({ obj }).obj;
+
+    addAttributeToJsEditorObject(obj, attribute);
+
+    return obj;
+}
+
+export function removeAttribute(obj, attribute) {
+    // Convert to editor object
+    obj = convertToEditorObject({ obj }).obj;
+
+    deleteAttributeFromJsEditorObject(obj, attribute);
 
     return obj;
 }

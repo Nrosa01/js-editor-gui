@@ -1,10 +1,14 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import { slide } from "svelte/transition";
   export let name = "Item";
   export let expanded = false;
 
+  const dispatch = createEventDispatcher();
+
   function toggle() {
     expanded = !expanded;
+    dispatch("toggle", expanded);
   }
 
   const expandedClass = "rotate-90";
