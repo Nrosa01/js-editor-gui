@@ -12,27 +12,27 @@
   //localStorage.clear();
   const addObj = (obj) => {
     let item = utils.convertToEditorObject({ obj }).obj;
-    console.log("Adding item");
-    console.log(data);
+    //console.log("Adding item");
+    //console.log(data);
     data.jsItems = [...data.jsItems, item];
     data.htmlItems.length = data.jsItems.length;
     data.htmlItemsData.length = data.jsItems.length;
-    console.log(data);
-    console.log("-----------------");
+    //console.log(data);
+    //console.log("-----------------");
   };
 
   function close(event) {
     let id = event.detail;
 
-    console.log("Closing item with id: " + id);
-    console.log(data);
+    //console.log("Closing item with id: " + id);
+    //console.log(data);
 
     data.jsItems = data.jsItems.filter((_, i) => i !== id);
     data.htmlItems.length = data.jsItems.length;
     data.htmlItemsData.length = data.jsItems.length;
 
-    console.log(data);
-    console.log("-----------------");
+    //console.log(data);
+    //console.log("-----------------");
   }
 
   let data = utils.load();
@@ -86,9 +86,9 @@
 
     data.htmlItemsData = loadedFile.htmlItemsData;
 
-    console.log("Loaded config");
-    console.log(data);
-    console.log("-----------------");
+    //console.log("Loaded config");
+    //console.log(data);
+    //console.log("-----------------");
   };
 
   onMount(() => {
@@ -131,13 +131,13 @@
     //   utils.save(data);
     // }, 5000);
 
-    console.log("On mount");
-    console.log(data);
+    //console.log("On mount");
+    //console.log(data);
   });
 
   function getHTMLItemsData() {
-    console.log("Getting HTML items data")
-    console.log(data.htmlItems)
+    //console.log("Getting HTML items data")
+    //console.log(data.htmlItems)
     data.htmlItemsData = [];
     
     for (let i = 0; i < data.htmlItems.length; i++) {
@@ -154,7 +154,7 @@
       data.htmlItemsData.push({ width, height, left, top, zIndex });
     }
     
-    console.log("Returning HTML items data")
+    //console.log("Returning HTML items data")
     return data.htmlItemsData;
   }
 

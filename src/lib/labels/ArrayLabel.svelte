@@ -74,10 +74,11 @@
 
   let read_only = false;
   let expanded = false;
+  let mounted = false;
 
   $:
   {
-    if(fieldValue !== null)
+    if(fieldValue !== null && mounted)
     {
       read_only = getAttribute(fieldValue, "READ_ONLY");
       expanded = getAttribute(fieldValue, "EXPANDED");
@@ -87,6 +88,7 @@
   onMount(() => {
     addHiddenLabelAttribute();
     if (read_only) addReadOnlyAttribute();
+    mounted = true;
   });
 
   function onToggle(event) {

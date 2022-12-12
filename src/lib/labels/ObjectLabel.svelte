@@ -37,6 +37,8 @@
     if (fieldValue !== null && mounted) {
       read_only = getAttribute(fieldValue, "READ_ONLY");
       expanded = getAttribute(fieldValue, "EXPANDED");
+      onToggle({ detail: expanded });
+      //console.log("ObjectLabel: ", fieldName, fieldValue, expanded);
     }
   }
 
@@ -46,7 +48,11 @@
   }
 </script>
 
-<Accordeon on:toggle="{onToggle}" expanded="{expanded}" name="{fieldName}">
+<Accordeon 
+on:toggle="{onToggle}" 
+expanded="{expanded}" 
+name="{fieldName}"
+class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
   <div slot="buttonRight" class="flex flex-row">
     <slot />
   </div>
