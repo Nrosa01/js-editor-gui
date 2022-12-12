@@ -27,7 +27,7 @@
     // Set center as pivot point
     dragElementNode.style.transformOrigin = "center";
 
-    if (Object.keys(attributes).length === 0) {
+    if (attributes === null || Object.keys(attributes).length === 0) {
       attributes = {
         top: parentHeight / 2 - elementHeight / 2,
         left: parentWidth / 2 - elementWidth / 2,
@@ -75,7 +75,7 @@
     windowsName="{windowsName}"
     bind:node="{dragElementChild}"
     on:close="{close}" />
-  <div bind:this="{slot}" class="overflow-auto resize bg-slate-500">
+  <div bind:this="{slot}" class="overflow-auto resize bg-slate-500 rounded-md">
     <slot />
   </div>
 </div>
