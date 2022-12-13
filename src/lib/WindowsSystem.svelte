@@ -18,7 +18,7 @@
     //console.log("Adding item");
     //console.log(data);
     data.jsItems = [...data.jsItems, item];
-    console.log(data);
+    //console.log(data);
     //console.log(data);
     //console.log("-----------------");
   };
@@ -36,7 +36,7 @@
   }
 
   let data = utils.load();
-  console.log(data);
+  //console.log(data);
   //console.log(data)
   //data.jsItems = []
 
@@ -240,7 +240,7 @@
   });
 </script>
 
-<!-- <Mover items="{data.htmlItems}" scale="{data.canvas.scale}" /> -->
+<Mover scale="{data.canvas.scale}" />
 <div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows

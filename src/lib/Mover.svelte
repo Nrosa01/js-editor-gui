@@ -1,7 +1,6 @@
 <script>
   import { onMount } from "svelte";
 
-  export let items = [];
   export let scale = 1;
   let moving = false;
   let mouseX, mouseY;
