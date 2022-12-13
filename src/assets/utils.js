@@ -390,15 +390,35 @@ function saveToFile(fileName, data) {
         , 0);
 }
 
-function checkIfValidEditorObject(obj) {
+function checkIfValidJsEditorValue(obj) {
     // If the object contains a type$jsEditor property, it is a valid editor object
     return obj !== null && (obj.hasOwnProperty("type$jsEditor") || obj.hasOwnProperty("attributes$jsEditor"));
+}
+
+export function checkIfValidJsEditorObject(obj)
+{
+    // If it's an object, check every field, if it's an array, check every item
+    // Use recursion
+    if (getTypeAsString(obj) === "Object") {
+        for (let [key, value] of Object.entries(obj)) {
+            if (!checkIfValidJsEditorValue(value))
+                return false;
+        }
+    }
+    else if (getTypeAsString(obj) === "Array") {
+        for (let i = 0; i < obj.length; i++) {
+            if (!checkIfValidJsEditorValue(obj[i]))
+                return false;
+        }
+    }
+
+    return true;
 }
 
 export function convertToEditorObject(obj) {
     // Iterate object entries
     for (let [key, value] of Object.entries(obj)) {
-        if (checkIfValidEditorObject(value)) {
+        if (checkIfValidJsEditorValue(value)) {
             if (!value.hasOwnProperty("type$jsEditor"))
                 value.type$jsEditor = getTypeAsString(value.value);
 

@@ -145,9 +145,51 @@
     }
   }
 
+  let appCrashed = false;
+
   // On Page Close, save items to localStorage
   window.onbeforeunload = () => {
     save();
+    if(!appCrashed) 
+      localStorage.setItem("appCrahed", appCrashed.toString())
+    console.log("Unload")
+  };
+
+  window.onerror = (message, source, lineno, colno, error) => {
+    console.log("Error: " + message);
+    console.log("Source: " + source);
+    console.log("Line: " + lineno);
+    console.log("Column: " + colno);
+
+    // Check if the app crashed before
+    if (localStorage.getItem("appCrahed") === "true") {
+      // Modal to ask if user wants to clear the data
+      if(confirm("The app crashed before, do you want to clear the data?"))
+      {
+        localStorage.clear();
+        data = { jsItems: [], canvas: { scale: 1 }};
+      }
+      
+      window.location.reload();
+      return;
+    }
+    
+    appCrashed = true;
+    console.log(localStorage.getItem("appCrahed"))
+    localStorage.setItem("appCrahed", appCrashed.toString())
+
+    // Check if all objects of jsItems are valid
+    // Use index loop to get index of invalid object
+    for (let i = 0; i < data.jsItems.length; i++) {
+      const item = data.jsItems[i];
+      if (!utils.checkIfValidJsEditorObject(item)) {
+        alert(`Invalid object at ${i}, turning into valid object (might cause issues)`);
+        data.jsItems[i] = utils.convertToEditorObject({item}).item;
+        save();
+        window.location.reload();
+        return;
+      }
+    }
   };
 
   function save() {
