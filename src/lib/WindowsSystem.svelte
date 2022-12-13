@@ -36,12 +36,14 @@
   }
 
   let data = utils.load();
+  //console.log(data)
   //data.jsItems = []
 
   $: {
     // Make sure scale is no less than 0.1
-    if (data.scale < 0.1) data.scale = 0.1;
-    if (container) container.style.transform = `scale(${data.scale})`;
+    if (data.canvas.scale < 0.1) data.canvas.scale = 0.1;
+    if(data.canvas.scale > 5) data.canvas.scale = 5;
+    if (container) container.style.transform = `scale(${data.canvas.scale})`;
   }
 
   const addElmnd = async () => {
@@ -60,9 +62,6 @@
     let loadedFile = await utils.loadFile(".json");
     loadedFile = objUtils.deserializeJsAsText(loadedFile);
     loadedFile.htmlItems = [];
-    // Check if it contains scale, if not or if it's not a number, set it to 1
-    if (loadedFile.scale === undefined || isNaN(loadedFile.scale))
-      loadedFile.scale = 1;
 
     if (loadedFile !== undefined && typeof loadedFile === "object") {
       // Check if loaded file contains jsItems and if it's an array
@@ -85,6 +84,7 @@
     }
 
     data.htmlItemsData = loadedFile.htmlItemsData;
+    utils.tryMakeDataValid(data);
 
     //console.log("Loaded config");
     //console.log(data);
@@ -97,7 +97,7 @@
       // If event is Ctrl + + or Ctrl + - Prevent zoom
       if (event.ctrlKey && (keyToUpper === "+" || keyToUpper === "-")) {
         event.preventDefault();
-        data.scale += keyToUpper === "+" ? 0.1 : -0.1;
+        data.canvas.scale += keyToUpper === "+" ? 0.1 : -0.1;
       }
     });
 
@@ -107,7 +107,7 @@
       (event) => {
         if (event.ctrlKey == true) {
           event.preventDefault();
-          data.scale += event.deltaY > 0 ? -0.1 : 0.1;
+          data.canvas.scale += event.deltaY > 0 ? -0.1 : 0.1;
         }
       },
       { passive: false }
@@ -119,7 +119,7 @@
       (event) => {
         if (event.ctrlKey == true) {
           event.preventDefault();
-          data.scale += event.deltaY > 0 ? -0.1 : 0.1;
+          data.canvas.scale += event.deltaY > 0 ? -0.1 : 0.1;
         }
       },
       { passive: false }
@@ -176,14 +176,14 @@
     localStorage.clear();
   });
   addToApi("getItems", () => data.jsItems);
-  addToApi("getScale", () => data.scale);
-  addToApi("setScale", (scale) => (data.scale = scale));
+  addToApi("getScale", () => data.canvas.scale);
+  addToApi("setScale", (scale) => (data.canvas.scale = scale));
   addToApi("saveToFile", () => utils.saveConfigToFile(data, "config.json"));
   addToApi("loadFromFile", loadConfig);
   addToApi("updateView", () => {data = data})
 </script>
 
-<Mover items="{data.htmlItems}" scale="{data.scale}" />
+<Mover items="{data.htmlItems}" scale="{data.canvas.scale}" />
 <div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows

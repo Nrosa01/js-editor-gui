@@ -289,19 +289,49 @@ export function load() {
     let htmlItemsData = objUtils.deserializeJsAsText(localStorage.getItem("htmlItemsData"));
     if (htmlItemsData === null) htmlItemsData = [];
 
-    let scale = localStorage.getItem("scale");
-    if (scale === null) scale = 1;
-    else scale = parseFloat(scale);
+    let canvas = objUtils.deserializeJsAsText(localStorage.getItem("canvas"));
+    if (canvas === null) canvas = { scale: 1};
 
     let htmlItems = [];
 
-    return { jsItems, htmlItemsData, htmlItems, scale };
+    let data = { jsItems, htmlItemsData, htmlItems, canvas };
+    tryMakeDataValid(data);
+
+    return data;
+}
+
+export function tryMakeDataValid(data) {
+    // If it doesn contain the jsItems, then it is not valid
+    if (!data.hasOwnProperty("jsItems")) {
+        data.jsItems = [];
+    }
+
+    // If it doesn contain the htmlItemsData, then it is not valid
+    if (!data.hasOwnProperty("htmlItemsData")) {
+        data.htmlItemsData = [];
+    }
+
+    // If it doesn't contain htmlItems, then it is not valid
+    if (!data.hasOwnProperty("htmlItems")) {
+        data.htmlItems = [];
+    }
+
+    // If it doesn't contain canvas, then it is not valid
+    if (!data.hasOwnProperty("canvas")) {
+        data.canvas = { scale: 1 };
+    }
+
+    // If it doesn't contain scale, then it is not valid
+    if (!data.canvas.hasOwnProperty("scale"))
+        data.canvas.scale = 1;
+
+    return true
 }
 
 export function save(data) {
     localStorage.setItem("items", objUtils.serializeJsAsText(data.jsItems));
     localStorage.setItem("htmlItemsData", objUtils.serializeJsAsText(data.htmlItemsData));
-    localStorage.setItem("scale", data.scale);
+    localStorage.setItem("canvas", objUtils.serializeJsAsText(data.canvas));
 }
 
 export function saveConfigToFile(data, fileName) {
