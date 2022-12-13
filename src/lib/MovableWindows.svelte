@@ -27,6 +27,9 @@
     // Set center as pivot point
     dragElementNode.style.transformOrigin = "center";
 
+    console.log("attributes")
+    console.log(attributes)
+
     if (attributes === null || Object.keys(attributes).length === 0) {
       attributes = {
         top: parentHeight / 2 - elementHeight / 2,

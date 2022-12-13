@@ -12,11 +12,13 @@
   //localStorage.clear();
   const addObj = (obj) => {
     let item = utils.convertToEditorObject({ obj }).obj;
+
+    item.windows$jsEditor = null;
+
     //console.log("Adding item");
     //console.log(data);
     data.jsItems = [...data.jsItems, item];
-    data.htmlItems.length = data.jsItems.length;
-    data.htmlItemsData.length = data.jsItems.length;
+    console.log(data);
     //console.log(data);
     //console.log("-----------------");
   };
@@ -28,21 +30,20 @@
     //console.log(data);
 
     data.jsItems = data.jsItems.filter((_, i) => i !== id);
-    data.htmlItems.length = data.jsItems.length;
-    data.htmlItemsData.length = data.jsItems.length;
 
     //console.log(data);
     //console.log("-----------------");
   }
 
   let data = utils.load();
+  console.log(data);
   //console.log(data)
   //data.jsItems = []
 
   $: {
     // Make sure scale is no less than 0.1
     if (data.canvas.scale < 0.1) data.canvas.scale = 0.1;
-    if(data.canvas.scale > 5) data.canvas.scale = 5;
+    if (data.canvas.scale > 5) data.canvas.scale = 5;
     if (container) container.style.transform = `scale(${data.canvas.scale})`;
   }
 
@@ -61,7 +62,6 @@
   const loadConfig = async () => {
     let loadedFile = await utils.loadFile(".json");
     loadedFile = objUtils.deserializeJsAsText(loadedFile);
-    loadedFile.htmlItems = [];
 
     if (loadedFile !== undefined && typeof loadedFile === "object") {
       // Check if loaded file contains jsItems and if it's an array
@@ -83,7 +83,6 @@
       data = loadedFile;
     }
 
-    data.htmlItemsData = loadedFile.htmlItemsData;
     utils.tryMakeDataValid(data);
 
     //console.log("Loaded config");
@@ -124,74 +123,87 @@
       },
       { passive: false }
     );
-
-    // Set autosave every 5 seconds
-    // setInterval(() => {
-    //   getHTMLItemsData();
-    //   utils.save(data);
-    // }, 5000);
-
-    //console.log("On mount");
-    //console.log(data);
   });
 
-  function getHTMLItemsData() {
-    //console.log("Getting HTML items data")
-    //console.log(data.htmlItems)
-    data.htmlItemsData = [];
-    
-    for (let i = 0; i < data.htmlItems.length; i++) {
-      const element = data.htmlItems[i];
-      
-      if (element === undefined || element === null) continue;
-      
+  function saveWindowsData() {
+    for (let i = 0; i < data.jsItems.length; i++) {
+      const element = data.jsItems[i].windows$jsEditor;
+      if (element === undefined || element === null) {
+        console.warn("Element is undefined or null");
+        return;
+      }
+
       const style = window.getComputedStyle(element);
       const width = parseInt(style.width);
       const height = parseInt(style.height);
       const left = parseInt(style.left);
       const top = parseInt(style.top);
       const zIndex = parseInt(style.zIndex);
-      data.htmlItemsData.push({ width, height, left, top, zIndex });
-    }
-    
-    //console.log("Returning HTML items data")
-    return data.htmlItemsData;
-  }
 
-  data.getItemData = getHTMLItemsData;
+      const jsItem = data.jsItems[i];
+      jsItem.windowsData$jsEditor = { width, height, left, top, zIndex };
+    }
+  }
 
   // On Page Close, save items to localStorage
   window.onbeforeunload = () => {
-    getHTMLItemsData();
-    utils.save(data);
+    save();
   };
+
+  function save() {
+    saveWindowsData();
+
+    const dataToSave = { ...data };
+
+    // Filter jsItems to remove windows$jsEditor
+    dataToSave.jsItems = data.jsItems.map((item) => {
+      const { windows$jsEditor, ...rest } = item;
+      return rest;
+    });
+
+    utils.save(dataToSave);
+  }
+
+  function saveToFile() {
+    saveWindowsData();
+
+    const dataToSave = { ...data };
+
+    // Filter jsItems to remove windows$jsEditor
+    dataToSave.jsItems = data.jsItems.map((item) => {
+      const { windows$jsEditor, ...rest } = item;
+      return rest;
+    });
+
+    utils.saveConfigToFile(dataToSave, "config.json");
+  }
 
   // Api functions
   addToApi("add", addObj);
   addToApi("addItem", addElmnd);
   addToApi("clear", () => {
     data.jsItems = [];
-    data.htmlItems = [];
-    data.htmlItemsData = [];
     localStorage.clear();
   });
   addToApi("getItems", () => data.jsItems);
   addToApi("getScale", () => data.canvas.scale);
   addToApi("setScale", (scale) => (data.canvas.scale = scale));
-  addToApi("saveToFile", () => utils.saveConfigToFile(data, "config.json"));
+  addToApi("saveToFile", saveToFile);
   addToApi("loadFromFile", loadConfig);
-  addToApi("updateView", () => {data = data})
+  addToApi("updateView", () => {
+    data = data;
+  });
 </script>
 
-<Mover items="{data.htmlItems}" scale="{data.canvas.scale}" />
+<!-- <Mover items="{data.htmlItems}" scale="{data.canvas.scale}" /> -->
 <div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows
       on:close="{close}"
       id="{i}"
-      bind:dragElementNode="{data.htmlItems[i]}"
+      bind:dragElementNode="{item.windows$jsEditor}"
       windowsName="{item.value.WIN_TITLE?.value + ` ${i}` ?? `Windows ${i}`}"
-      attributes="{data.htmlItemsData[i]}">
+      attributes="{item.windowsData$jsEditor}">
       <ObjectLabel
         expanded
         parent="{data.jsItems}"

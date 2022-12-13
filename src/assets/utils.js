@@ -286,15 +286,10 @@ export function load() {
     let jsItems = objUtils.deserializeJsAsText(localStorage.getItem("items"));
     if (jsItems === null) jsItems = [];
 
-    let htmlItemsData = objUtils.deserializeJsAsText(localStorage.getItem("htmlItemsData"));
-    if (htmlItemsData === null) htmlItemsData = [];
-
     let canvas = objUtils.deserializeJsAsText(localStorage.getItem("canvas"));
-    if (canvas === null) canvas = { scale: 1};
+    if (canvas === null) canvas = { scale: 1 };
 
-    let htmlItems = [];
-
-    let data = { jsItems, htmlItemsData, htmlItems, canvas };
+    let data = { jsItems, canvas };
     tryMakeDataValid(data);
 
     return data;
@@ -306,16 +301,6 @@ export function tryMakeDataValid(data) {
         data.jsItems = [];
     }
 
-    // If it doesn contain the htmlItemsData, then it is not valid
-    if (!data.hasOwnProperty("htmlItemsData")) {
-        data.htmlItemsData = [];
-    }
-
-    // If it doesn't contain htmlItems, then it is not valid
-    if (!data.hasOwnProperty("htmlItems")) {
-        data.htmlItems = [];
-    }
-
     // If it doesn't contain canvas, then it is not valid
     if (!data.hasOwnProperty("canvas")) {
         data.canvas = { scale: 1 };
@@ -325,17 +310,23 @@ export function tryMakeDataValid(data) {
     if (!data.canvas.hasOwnProperty("scale"))
         data.canvas.scale = 1;
 
+    // Iterate each jsItem and add jsWindows$jsEditor to it (if it doesn't exist)
+    for (let i = 0; i < data.jsItems.length; i++) {
+        const jsItem = data.jsItems[i];
+        if (!jsItem.hasOwnProperty("windows$jsEditor"))
+            jsItem.windows$jsEditor = null;
+    }
+
     return true
 }
 
 export function save(data) {
     localStorage.setItem("items", objUtils.serializeJsAsText(data.jsItems));
-    localStorage.setItem("htmlItemsData", objUtils.serializeJsAsText(data.htmlItemsData));
     localStorage.setItem("canvas", objUtils.serializeJsAsText(data.canvas));
 }
 
 export function saveConfigToFile(data, fileName) {
-    const config = { jsItems: data.jsItems, htmlItemsData: data.htmlItemsData, scale: data.scale }
+    const config = { jsItems: data.jsItems, canvas: data.canvas }
     saveToFile(fileName, objUtils.serializeJsAsText(config));
 }
 
