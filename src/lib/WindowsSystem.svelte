@@ -156,6 +156,9 @@
   };
 
   window.onerror = (message, source, lineno, colno, error) => {
+    if(utils.checkIfErrorCanBeIgnored(message))
+      return;
+
     console.log("Error: " + message);
     console.log("Source: " + source);
     console.log("Line: " + lineno);

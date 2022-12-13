@@ -395,8 +395,7 @@ function checkIfValidJsEditorValue(obj) {
     return obj !== null && (obj.hasOwnProperty("type$jsEditor") || obj.hasOwnProperty("attributes$jsEditor"));
 }
 
-export function checkIfValidJsEditorObject(obj)
-{
+export function checkIfValidJsEditorObject(obj) {
     // If it's an object, check every field, if it's an array, check every item
     // Use recursion
     if (getTypeAsString(obj) === "Object") {
@@ -413,6 +412,45 @@ export function checkIfValidJsEditorObject(obj)
     }
 
     return true;
+}
+
+function levenshteinDistance(str1, str2) {
+    let dp = new Array(str1.length + 1);
+    for (let i = 0; i < dp.length; i++) {
+        dp[i] = new Array(str2.length + 1);
+    }
+
+    for (let i = 0; i < dp.length; i++) {
+        dp[i][0] = i;
+    }
+
+    for (let i = 0; i < dp[0].length; i++) {
+        dp[0][i] = i;
+    }
+
+    for (let i = 1; i < dp.length; i++) {
+        for (let j = 1; j < dp[0].length; j++) {
+            if (str1[i - 1] === str2[j - 1])
+                dp[i][j] = dp[i - 1][j - 1];
+            else
+                dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1;
+        }
+    }
+
+    return dp[dp.length - 1][dp[0].length - 1];
+}
+
+export function checkIfErrorCanBeIgnored(errorMsg) {
+    const errorsToIgnore = ["ResizeObserver loop limit exceeded"]
+    for (let i = 0; i < errorsToIgnore.length; i++) {
+        // If levenshtein distance is less than 3, it's probably the same error
+        console.log("Levenshtein distance: " + levenshteinDistance(errorMsg, errorsToIgnore[i]));
+        // Print both strings
+        console.log("Error: " + errorMsg);
+        console.log("Error to ignore: " + errorsToIgnore[i]);
+        if (levenshteinDistance(errorMsg, errorsToIgnore[i]) < 3)
+            return true;
+    }
 }
 
 export function convertToEditorObject(obj) {
