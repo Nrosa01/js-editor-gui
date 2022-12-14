@@ -57,10 +57,10 @@
       element.style.left = elementLeft + movementX / scale + "px";
     }
   }
-
-  onMount(() => {
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  });
 </script>
+
+<svelte:window 
+on:mousedown="{onMouseDown}"
+on:mousemove="{onMouseMove}"
+on:mouseup="{onMouseUp}"
+/>

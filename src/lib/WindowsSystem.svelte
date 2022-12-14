@@ -2,46 +2,27 @@
   import ObjectLabel from "./labels/ObjectLabel.svelte";
   import MovableWindows from "./MovableWindows.svelte";
   import * as utils from "../assets/utils.js";
-  import { onMount } from "svelte";
   import * as objUtils from "../assets/objectUtils.js";
   import { addToApi } from "../assets/api.js";
   import Mover from "./Mover.svelte";
 
   let container;
 
-  //localStorage.clear();
   const addObj = (obj) => {
     let item = utils.convertToEditorObject({ obj }).obj;
 
     item.windows$jsEditor = null;
-
-    //console.log("Adding item");
-    //console.log(data);
     data.jsItems = [...data.jsItems, item];
-    //console.log(data);
-    //console.log(data);
-    //console.log("-----------------");
   };
 
   function close(event) {
     let id = event.detail;
-
-    //console.log("Closing item with id: " + id);
-    //console.log(data);
-
     data.jsItems = data.jsItems.filter((_, i) => i !== id);
-
-    //console.log(data);
-    //console.log("-----------------");
   }
 
   let data = utils.load();
-  //console.log(data);
-  //console.log(data)
-  //data.jsItems = []
 
   $: {
-    // Make sure scale is no less than 0.1
     if (data.canvas.scale < 0.1) data.canvas.scale = 0.1;
     if (data.canvas.scale > 5) data.canvas.scale = 5;
     if (container) container.style.transform = `scale(${data.canvas.scale})`;
@@ -84,46 +65,23 @@
     }
 
     utils.tryMakeDataValid(data);
-
-    //console.log("Loaded config");
-    //console.log(data);
-    //console.log("-----------------");
   };
 
-  onMount(() => {
-    document.addEventListener("keydown", (event) => {
-      const keyToUpper = event.key.toUpperCase();
-      // If event is Ctrl + + or Ctrl + - Prevent zoom
-      if (event.ctrlKey && (keyToUpper === "+" || keyToUpper === "-")) {
-        event.preventDefault();
-        data.canvas.scale += keyToUpper === "+" ? 0.1 : -0.1;
-      }
-    });
+  function onKeydown(event) {
+    const keyToUpper = event.key.toUpperCase();
+    // If event is Ctrl + + or Ctrl + - Prevent zoom
+    if (event.ctrlKey && (keyToUpper === "+" || keyToUpper === "-")) {
+      event.preventDefault();
+      data.canvas.scale += keyToUpper === "+" ? 0.1 : -0.1;
+    }
+  }
 
-    //For Google Chrome
-    document.addEventListener(
-      "mousewheel",
-      (event) => {
-        if (event.ctrlKey == true) {
-          event.preventDefault();
-          data.canvas.scale += event.deltaY > 0 ? -0.1 : 0.1;
-        }
-      },
-      { passive: false }
-    );
-
-    // For Mozilla Firefox
-    document.addEventListener(
-      "DOMMouseScroll",
-      (event) => {
-        if (event.ctrlKey == true) {
-          event.preventDefault();
-          data.canvas.scale += event.deltaY > 0 ? -0.1 : 0.1;
-        }
-      },
-      { passive: false }
-    );
-  });
+  function onMouseWheel(event) {
+    if (event.ctrlKey == true) {
+      event.preventDefault();
+      data.canvas.scale += event.deltaY > 0 ? -0.1 : 0.1;
+    }
+  }
 
   function saveWindowsData() {
     for (let i = 0; i < data.jsItems.length; i++) {
@@ -148,16 +106,14 @@
   let appCrashed = false;
 
   // On Page Close, save items to localStorage
-  window.onbeforeunload = () => {
+  function onBeforeUnload() {
     save();
-    if(!appCrashed) 
-      localStorage.setItem("appCrahed", appCrashed.toString())
-    console.log("Unload")
+    if (!appCrashed) localStorage.setItem("appCrahed", appCrashed.toString());
+    console.log("Unload");
   };
 
-  window.onerror = (message, source, lineno, colno, error) => {
-    if(utils.checkIfErrorCanBeIgnored(message))
-      return;
+  function onError(message, source, lineno, colno, error) {
+    if (utils.checkIfErrorCanBeIgnored(message)) return;
 
     console.log("Error: " + message);
     console.log("Source: " + source);
@@ -167,33 +123,33 @@
     // Check if the app crashed before
     if (localStorage.getItem("appCrahed") === "true") {
       // Modal to ask if user wants to clear the data
-      if(confirm("The app crashed before, do you want to clear the data?"))
-      {
+      if (confirm("The app crashed before, do you want to clear the data?")) {
         localStorage.clear();
-        data = { jsItems: [], canvas: { scale: 1 }};
+        data = { jsItems: [], canvas: { scale: 1 } };
       }
-      
+
       window.location.reload();
       return;
     }
-    
+
     appCrashed = true;
-    console.log(localStorage.getItem("appCrahed"))
-    localStorage.setItem("appCrahed", appCrashed.toString())
+    console.log(localStorage.getItem("appCrahed"));
+    localStorage.setItem("appCrahed", appCrashed.toString());
 
     // Check if all objects of jsItems are valid
-    // Use index loop to get index of invalid object
     for (let i = 0; i < data.jsItems.length; i++) {
       const item = data.jsItems[i];
       if (!utils.checkIfValidJsEditorObject(item)) {
-        alert(`Invalid object at ${i}, turning into valid object (might cause issues)`);
-        data.jsItems[i] = utils.convertToEditorObject({item}).item;
+        alert(
+          `Invalid object at ${i}, turning into valid object (might cause issues)`
+        );
+        data.jsItems[i] = utils.convertToEditorObject({ item }).item;
         save();
         window.location.reload();
         return;
       }
     }
-  };
+  }
 
   function save() {
     saveWindowsData();
@@ -240,6 +196,12 @@
   });
 </script>
 
+<svelte:window
+  on:error="{onError}"
+  on:keydown="{onKeydown}"
+  on:wheel|nonpassive="{onMouseWheel}"
+  on:beforeunload="{onBeforeUnload}" />
+
 <Mover scale="{data.canvas.scale}" />
 <div class="flex flex-col w-full h-full" bind:this="{container}">
   {#each data.jsItems as item, i (item)}
@@ -247,7 +209,7 @@
       on:close="{close}"
       id="{i}"
       bind:dragElementNode="{item.windows$jsEditor}"
-      windowsName="{item.value.WIN_TITLE?.value + ` ${i}` ?? `Windows ${i}`}"
+      windowsName="{item.value.WIN_TITLE?.value ?? `Windows ${i}`}"
       attributes="{item.windowsData$jsEditor}">
       <ObjectLabel
         expanded
@@ -257,5 +219,3 @@
     </MovableWindows>
   {/each}
 </div>
-
-<!-- windowsName="{item.WIN_TITLE ?? `Windows ${i}`}" -->
