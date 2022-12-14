@@ -80,7 +80,6 @@ export function dragElement(elmnt, child) {
         pos2 = 0,
         pos3 = 0,
         pos4 = 0;
-    let elements = document.querySelectorAll('.absolute');
     if (child) {
         // if present, the header is where you move the DIV from:
         child.onmousedown = dragMouseDown;
@@ -127,7 +126,8 @@ export function dragElement(elmnt, child) {
         let scaleMultiplier = 1;
         // Parent might have a scale, so we need to take it into account
         if (parent.style.transform) {
-            const scale = parent.style.transform.split('(')[1].split(')')[0].split(',')[0];
+            // Parent might have many transforms, so we need to get the scale one
+            const scale = parent.style.transform.split('scale(')[1].split(')')[0];
             scaleMultiplier = parseFloat(scale);
             scaleMultiplier = 1 / scaleMultiplier;
         }
@@ -145,21 +145,12 @@ export function dragElement(elmnt, child) {
         const parentStyle = window.getComputedStyle(parent);
         const parentWidth = parseInt(parentStyle.width);
         const parentHeight = parseInt(parentStyle.height);
-        const parentPaddingLeft = parseInt(parentStyle.paddingLeft);
-        const parentPaddingTop = parseInt(parentStyle.paddingTop);
-        const parentPaddingRight = parseInt(parentStyle.paddingRight);
-        const parentPaddingBottom = parseInt(parentStyle.paddingBottom);
+
 
         // Compute element style
         const elementStyle = window.getComputedStyle(elmnt);
         const elementWidth = parseInt(elementStyle.width);
         const elementHeight = parseInt(elementStyle.height);
-        const elementMarginLeft = parseInt(elementStyle.marginLeft);
-        const elementMarginTop = parseInt(elementStyle.marginTop);
-        const elementMarginRight = parseInt(elementStyle.marginRight);
-        const elementMarginBottom = parseInt(elementStyle.marginBottom);
-
-        const l = parent.offsetLeft;
 
         // Make sure element is smallwer or equal to parent
         if (elementWidth > parentWidth) {
@@ -168,17 +159,6 @@ export function dragElement(elmnt, child) {
         if (elementHeight > parentHeight) {
             elmnt.style.height = parentHeight + "px";
         }
-
-        // Clamp the element to the parent
-        // let minPos = parentPaddingLeft - elementMarginLeft + l;
-        // let maxPos = parentWidth - parentPaddingRight - elementWidth - elementMarginRight + l - 1;
-        // const currentLeft = parseInt(elmnt.style.left);
-        // elmnt.style.left = Clamp(currentLeft, minPos, maxPos) + "px";
-
-        // const minYPos = parentPaddingTop - elementMarginTop;
-        // const maxYPos = parentHeight - parentPaddingBottom - elementHeight - elementMarginBottom;
-        // const currentTop = parseInt(elmnt.style.top);
-        // elmnt.style.top = Clamp(currentTop, minYPos, maxYPos) + "px";
     }
 
     function closeDragElement(e) {
@@ -289,10 +269,7 @@ export function valuesToDefault(obj) {
 
 export function load() {
     let jsItems = objUtils.deserializeJsAsText(localStorage.getItem("items"));
-    if (jsItems === null) jsItems = [];
-
     let canvas = objUtils.deserializeJsAsText(localStorage.getItem("canvas"));
-    if (canvas === null) canvas = { scale: 1 };
 
     let data = { jsItems, canvas };
     tryMakeDataValid(data);
@@ -302,18 +279,22 @@ export function load() {
 
 export function tryMakeDataValid(data) {
     // If it doesn contain the jsItems, then it is not valid
-    if (!data.hasOwnProperty("jsItems")) {
+    if (!data.hasOwnProperty("jsItems") || data.jsItems === null) {
         data.jsItems = [];
     }
 
     // If it doesn't contain canvas, then it is not valid
-    if (!data.hasOwnProperty("canvas")) {
+    if (!data.hasOwnProperty("canvas") || data.canvas === null) {
         data.canvas = { scale: 1 };
     }
 
     // If it doesn't contain scale, then it is not valid
-    if (!data.canvas.hasOwnProperty("scale"))
+    if (!data.canvas.hasOwnProperty("scale") || data.canvas.scale === null)
         data.canvas.scale = 1;
+
+    // If it doesn't contain transform, then it is not valid
+    if (!data.canvas.hasOwnProperty("transform") || data.canvas.transform === null)
+        data.canvas.transform = { x: 0, y: 0 };
 
     // Iterate each jsItem and add jsWindows$jsEditor to it (if it doesn't exist)
     for (let i = 0; i < data.jsItems.length; i++) {

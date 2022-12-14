@@ -6,9 +6,7 @@
   import icons from "./assets/icons.js";
 </script>
 
-<main>
-  <div
-    class="relative flex flex-col items-start align-center w-full h-screen bg-slate-600  overflow-hidden">
+<main class="overflow-hidden bg-slate-600">
     <WindowsSystem />
     <AppBar>
       <AppBarIcon src="{icons.add}" tooltip="Add Item" callback="{api.addItem}"/>
@@ -16,5 +14,4 @@
       <AppBarIcon src="{icons.download}" tooltip="Downlaod Board" callback="{api.saveToFile}"/>
       <AppBarIcon src="{icons.download}" tooltip="Load Board" callback="{api.loadFromFile}" button="rotate-180"/>
     </AppBar>
-  </div>
 </main>

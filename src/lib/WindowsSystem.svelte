@@ -4,9 +4,7 @@
   import * as utils from "../assets/utils.js";
   import * as objUtils from "../assets/objectUtils.js";
   import { addToApi } from "../assets/api.js";
-  import Mover from "./Mover.svelte";
-
-  let container;
+  import Canvas from "./Canvas.svelte";
 
   const addObj = (obj) => {
     let item = utils.convertToEditorObject({ obj }).obj;
@@ -21,13 +19,6 @@
   }
 
   let data = utils.load();
-  console.log(data)
-
-  $: {
-    if (data.canvas.scale < 0.1) data.canvas.scale = 0.1;
-    if (data.canvas.scale > 5) data.canvas.scale = 5;
-    if (container) container.style.transform = `scale(${data.canvas.scale})`;
-  }
 
   const addElmnd = async () => {
     let loadedFile = await utils.loadFile(".js, .json");
@@ -67,22 +58,6 @@
 
     utils.tryMakeDataValid(data);
   };
-
-  function onKeydown(event) {
-    const keyToUpper = event.key.toUpperCase();
-    // If event is Ctrl + + or Ctrl + - Prevent zoom
-    if (event.ctrlKey && (keyToUpper === "+" || keyToUpper === "-")) {
-      event.preventDefault();
-      data.canvas.scale += keyToUpper === "+" ? 0.1 : -0.1;
-    }
-  }
-
-  function onMouseWheel(event) {
-    if (event.ctrlKey == true) {
-      event.preventDefault();
-      data.canvas.scale += event.deltaY > 0 ? -0.1 : 0.1;
-    }
-  }
 
   function saveWindowsData() {
     for (let i = 0; i < data.jsItems.length; i++) {
@@ -199,12 +174,9 @@
 
 <svelte:window
   on:error="{onError}"
-  on:keydown="{onKeydown}"
-  on:wheel|nonpassive="{onMouseWheel}"
   on:beforeunload="{onBeforeUnload}" />
 
-<Mover scale="{data.canvas.scale}" />
-<div class="flex flex-col w-full h-full" bind:this="{container}">
+<Canvas bind:config="{data.canvas}">
   {#each data.jsItems as item, i (item)}
     <MovableWindows
       on:close="{close}"
@@ -219,4 +191,4 @@
         bind:fieldValue="{item}" />
     </MovableWindows>
   {/each}
-</div>
+</Canvas>
