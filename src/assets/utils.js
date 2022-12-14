@@ -443,11 +443,6 @@ function levenshteinDistance(str1, str2) {
 export function checkIfErrorCanBeIgnored(errorMsg) {
     const errorsToIgnore = ["ResizeObserver loop limit exceeded"]
     for (let i = 0; i < errorsToIgnore.length; i++) {
-        // If levenshtein distance is less than 3, it's probably the same error
-        console.log("Levenshtein distance: " + levenshteinDistance(errorMsg, errorsToIgnore[i]));
-        // Print both strings
-        console.log("Error: " + errorMsg);
-        console.log("Error to ignore: " + errorsToIgnore[i]);
         if (levenshteinDistance(errorMsg, errorsToIgnore[i]) < 3)
             return true;
     }

@@ -110,15 +110,15 @@
     save();
     if (!appCrashed) localStorage.setItem("appCrahed", appCrashed.toString());
     console.log("Unload");
-  };
+  }
 
-  function onError(message, source, lineno, colno, error) {
-    if (utils.checkIfErrorCanBeIgnored(message)) return;
+  function onError(e) {
+    if (utils.checkIfErrorCanBeIgnored(e.message)) return;
 
-    console.log("Error: " + message);
-    console.log("Source: " + source);
-    console.log("Line: " + lineno);
-    console.log("Column: " + colno);
+    console.log("Error: " + e.message);
+    console.log("Source: " + e.source);
+    console.log("Line: " + e.lineno);
+    console.log("Column: " + e.colno);
 
     // Check if the app crashed before
     if (localStorage.getItem("appCrahed") === "true") {
