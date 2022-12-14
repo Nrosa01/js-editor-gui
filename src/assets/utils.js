@@ -104,6 +104,11 @@ export function dragElement(elmnt, child) {
     function dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
+
+        // Ignore if not left click
+        if (e.button !== 0)
+            return;
+
         // get the mouse cursor position at startup:
         pos3 = e.clientX;
         pos4 = e.clientY;

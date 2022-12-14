@@ -68,12 +68,17 @@
     dispatch("close", id);
   }
 
+  function onPointerDown(event) {
+    // Ignore if not left mouse button
+    if (event.button !== 0) return;
+    moveToTop(dragElementNode, document.querySelectorAll(".absolute"));
+  }
+
   let slot;
 </script>
 
 <div
-  on:pointerdown="{() =>
-    moveToTop(dragElementNode, document.querySelectorAll('.absolute'))}"
+  on:pointerdown="{onPointerDown}"
   data-movable="movable"
   transition:scale
   bind:this="{dragElementNode}"
