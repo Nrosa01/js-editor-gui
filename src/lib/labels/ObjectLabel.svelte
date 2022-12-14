@@ -7,7 +7,7 @@
   import TextLabel from "./TextLabel.svelte";
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
-  import { getAttribute } from "../../assets/utils.js";
+  import { getAttribute, processFieldName } from "../../assets/utils.js";
   import { onMount } from "svelte";
 
   export let parent;
@@ -64,7 +64,7 @@
 <Accordeon
   on:toggle="{onToggle}"
   expanded="{expanded}"
-  name="{fieldName}"
+  name="{processFieldName(fieldName, "")}"
   class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
   <div slot="buttonRight" class="flex flex-row">
     <slot />

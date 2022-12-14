@@ -9,7 +9,7 @@
   import FunctionLabel from "./FunctionLabel.svelte";
   import ArrayLabel from "./ArrayLabel.svelte";
   import { onMount } from "svelte";
-  import { getAttribute } from "../../assets/utils.js";
+  import { getAttribute, processFieldName } from "../../assets/utils.js";
 
   function add() {
     let obj = {};
@@ -103,7 +103,7 @@
   <Accordeon
     on:toggle="{onToggle}"
     expanded="{expanded}"
-    name="{fieldName}"
+    name="{processFieldName(fieldName, "Array")}"
     class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
     <div slot="buttonLeft" class="flex flex-col items-center justify-center">
       <input
