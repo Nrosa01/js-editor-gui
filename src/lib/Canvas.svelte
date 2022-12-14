@@ -63,17 +63,6 @@
     config.transform.x += movementX / scale;
     config.transform.y += movementY / scale;
   }
-
-  // Listener to key o to reset canvas position
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "o") {
-      config.transform.x = 0;
-      config.transform.y = 0;
-      config.scale = 1;
-    }
-  });
-
   
   function onKeydown(event) {
     const keyToUpper = event.key.toUpperCase();
