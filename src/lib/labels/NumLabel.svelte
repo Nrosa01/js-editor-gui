@@ -20,11 +20,13 @@
 
   let inputClasses =
     "border rounded-md focus:outline-none focus:ring-1 box-content px-2 py-1 my-1 mx-2 read-only:text-slate-400 first-letter:px-2 font-bold text-slate-200 bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg col-span-2";
+
+  $: labelROClasses = read_only ? "text-slate-400" : "text-slate-200";
 </script>
 
 <div
   class="{`relative grid grid-cols-3 w-full items-center bg-slate-500 text-slate-200 font-bold pl-4`}">
-  <h3 class="{hiddenLabel ? 'hidden' : ''}">{processFieldName(fieldName)}</h3>
+  <h3 class="{hiddenLabel ? 'hidden' : ''} {labelROClasses}">{processFieldName(fieldName)}</h3>
   <input
     disabled="{read_only}"
     bind:value="{fieldValue.value}"

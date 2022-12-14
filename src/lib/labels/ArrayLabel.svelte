@@ -86,6 +86,8 @@
   }
   
   onMount(() => {
+    read_only = getAttribute(fieldValue, "READ_ONLY");
+
     addHiddenLabelAttribute();
     if (read_only) addReadOnlyAttribute();
     mounted = true;

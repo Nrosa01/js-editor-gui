@@ -21,6 +21,7 @@
   }
 
   let data = utils.load();
+  console.log(data)
 
   $: {
     if (data.canvas.scale < 0.1) data.canvas.scale = 0.1;

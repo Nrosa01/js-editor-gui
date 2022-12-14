@@ -28,31 +28,44 @@
     Function: FunctionLabel,
   };
 
-  onMount(() => {
-    onToggle({ detail: expanded });
-    mounted = true;
-  });
-
   $: {
     if (fieldValue !== null && mounted) {
       read_only = getAttribute(fieldValue, "READ_ONLY");
       expanded = getAttribute(fieldValue, "EXPANDED");
-      onToggle({ detail: expanded });
-      //console.log("ObjectLabel: ", fieldName, fieldValue, expanded);
     }
   }
+
+  onMount(() => {
+    read_only = getAttribute(fieldValue, "READ_ONLY");
+    onToggle({ detail: expanded });
+    if (read_only) addReadOnlyAttribute();
+    mounted = true;
+  });
 
   function onToggle(event) {
     if (event.detail) utils.addAttribute(fieldValue, "EXPANDED");
     else utils.removeAttribute(fieldValue, "EXPANDED");
   }
+
+  function addReadOnlyAttribute() {
+    // Iterate object values, if they don't have attributes$jsonEditor, add them
+    for (let i = 0; i < Object.values(fieldValue.value).length; i++) {
+      if (!Object.values(fieldValue.value)[i].attributes$jsEditor) {
+        Object.values(fieldValue.value)[i].attributes$jsEditor = ["READ_ONLY"];
+      } // Add READ_ONLY if it's not there
+      else {
+        if (!Object.values(fieldValue.value)[i].attributes$jsEditor.includes("READ_ONLY")) 
+          Object.values(fieldValue.value)[i].attributes$jsEditor.push("READ_ONLY");
+      }
+    }
+  }
 </script>
 
-<Accordeon 
-on:toggle="{onToggle}" 
-expanded="{expanded}" 
-name="{fieldName}"
-class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
+<Accordeon
+  on:toggle="{onToggle}"
+  expanded="{expanded}"
+  name="{fieldName}"
+  class="{!read_only ? 'text-slate-100' : 'text-slate-400'}">
   <div slot="buttonRight" class="flex flex-row">
     <slot />
   </div>
