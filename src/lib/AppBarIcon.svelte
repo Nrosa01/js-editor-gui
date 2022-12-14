@@ -23,7 +23,7 @@
 
   <span
     bind:this="{_tooltip}"
-    class="absolute w-auto p-2 m-4 -mx-1 min-w-max -top-12 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold
+    class="absolute w-auto p-2 m-4 -mx-1 min-w-max -top-12 rounded-md shadow-md text-slate-100 bg-gray-900 text-xs font-bold
     transition-all duration-200 origin-center scale-0 group-hover:scale-100">
     {tooltip}
   </span>

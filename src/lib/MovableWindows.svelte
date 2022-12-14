@@ -41,6 +41,13 @@
       slot.style[key.toLowerCase()] = value + "px";
     }
 
+    // Minimum height is 100px
+    const minimumH = 50;
+    if (attributes.height < minimumH) {
+      dragElementNode.style.height = minimumH + "px";
+      slot.style.height = minimumH + "px";
+    }
+
     dragElementNode.style.zIndex = attributes.zIndex;
   }
 

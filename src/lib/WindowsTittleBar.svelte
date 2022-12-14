@@ -13,15 +13,15 @@
 
 <nav
   bind:this="{node}"
-  class="flex justify-between bg-slate-800 text-white min-w-full rounded-t-md">
+  class="flex justify-between bg-slate-800 text-slate-100 min-w-full rounded-t-md">
   <div class="flex w-full items-center">
-    <h1 class="text-lg mx-8 py-2 font-bold font-heading select-none">
+    <h1 class="text-lg mx-8 py-2 font-bold font-heading select-none overflow-hidden">
       {windowsName}
     </h1>
     <!-- Empty space, without this it doesn wotk -->
-    <ul
+    <div
       class="flex px-4 mx-auto font-semibold font-heading space-x-12">
-    </ul>
+  </div>
     <!-- Header Icons -->
     <button
       on:click="{close}"
