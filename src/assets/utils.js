@@ -339,7 +339,7 @@ export function loadConfigFromFile() {
     return file;
 }
 
-export function importUTF8StringAsJSObject(str) {
+export function importModuleFromString(str) {
     return import(/* @vite-ignore */ "data:text/javascript;utf-8," + str);
 }
 

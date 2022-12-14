@@ -30,14 +30,14 @@
 
   const addElmnd = async () => {
     let loadedFile = await utils.loadFile(".js, .json");
-    loadedFile = await utils.importUTF8StringAsJSObject(loadedFile);
+    loadedFile = await utils.importModuleFromString(loadedFile);
 
     if (
       loadedFile !== undefined &&
       typeof loadedFile === "object" &&
       loadedFile.default !== undefined
     )
-      addObj(loadedFile.default);
+      addObj(objUtils.deepClone(loadedFile.default));
   };
 
   const loadConfig = async () => {
