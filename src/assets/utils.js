@@ -21,13 +21,6 @@ export function processFieldName(fieldName, defaultValue) {
         result += char;
     }
 
-    // If the text contains $, we want to take the text from the start to the $ and add it to the result withouth the $
-    if (result.includes('$')) {
-        const indexOf$ = result.indexOf('$');
-        const textBefore$ = result.substring(0, indexOf$);
-        return textBefore$;
-    }
-
     if (result === "")
         return defaultValue + "" ?? "";
 
@@ -87,13 +80,111 @@ export function dragElement(elmnt, child) {
         pos2 = 0,
         pos3 = 0,
         pos4 = 0;
-    let elements = document.querySelectorAll('.absolute');
     if (child) {
         // if present, the header is where you move the DIV from:
         child.onmousedown = dragMouseDown;
+        child.onmouseover = onHover;
+        child.onmouseout = onHoverOut;
     } else {
         // otherwise, move the DIV from anywhere inside the DIV:
         elmnt.onmousedown = dragMouseDown;
+        elmnt.onmouseover = onHover;
+        elmnt.onmouseout = onHoverOut;
+    }
+
+    function onHover(e) {
+        elmnt.style.cursor = 'move';
+    }
+
+    function onHoverOut(e) {
+        elmnt.style.cursor = 'default';
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+
+        // Ignore if not left click
+        if (e.button !== 0)
+            return;
+
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+
+        // calculate the new cursor position:
+        const parent = elmnt.parentElement;
+
+        let scaleMultiplier = 1;
+        // Parent might have a scale, so we need to take it into account
+        if (parent.style.transform) {
+            // Parent might have many transforms, so we need to get the scale one
+            const scale = parent.style.transform.split('scale(')[1].split(')')[0];
+            scaleMultiplier = parseFloat(scale);
+            scaleMultiplier = 1 / scaleMultiplier;
+        }
+
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2 * scaleMultiplier) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1 * scaleMultiplier) + "px";
+
+        // Check if the element is out of the parent, compute parent style
+        const parentStyle = window.getComputedStyle(parent);
+        const parentWidth = parseInt(parentStyle.width);
+        const parentHeight = parseInt(parentStyle.height);
+
+
+        // Compute element style
+        const elementStyle = window.getComputedStyle(elmnt);
+        const elementWidth = parseInt(elementStyle.width);
+        const elementHeight = parseInt(elementStyle.height);
+
+        // Make sure element is smallwer or equal to parent
+        if (elementWidth > parentWidth) {
+            elmnt.style.width = parentWidth + "px";
+        }
+        if (elementHeight > parentHeight) {
+            elmnt.style.height = parentHeight + "px";
+        }
+    }
+
+    function closeDragElement(e) {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+export function resizeElement(elmnt, anchor) {
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    let elements = document.querySelectorAll('.absolute');
+    // otherwise, move the DIV from anywhere inside the DIV:
+    anchor.onmousedown = dragMouseDown;
+    anchor.onmouseover = onHover;
+    anchor.onmouseout = onHoverOut;
+
+    function onHover(e) {
+        elmnt.style.cursor = 'se-resize';
+    }
+
+    function onHoverOut(e) {
+        elmnt.style.cursor = 'default';
     }
 
     function dragMouseDown(e) {
@@ -127,53 +218,14 @@ export function dragElement(elmnt, child) {
             scaleMultiplier = 1 / scaleMultiplier;
         }
 
-        pos1 = pos3 -  e.clientX;
-        pos2 = pos4 -  e.clientY;
-        pos3 =  e.clientX;
-        pos4 =  e.clientY;
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
 
-        // set the element's new position:
-        elmnt.style.top = (elmnt.offsetTop - pos2 * scaleMultiplier) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1 * scaleMultiplier) + "px";
-
-        // Check if the element is out of the parent, compute parent style
-        const parentStyle = window.getComputedStyle(parent);
-        const parentWidth = parseInt(parentStyle.width);
-        const parentHeight = parseInt(parentStyle.height);
-        const parentPaddingLeft = parseInt(parentStyle.paddingLeft);
-        const parentPaddingTop = parseInt(parentStyle.paddingTop);
-        const parentPaddingRight = parseInt(parentStyle.paddingRight);
-        const parentPaddingBottom = parseInt(parentStyle.paddingBottom);
-
-        // Compute element style
-        const elementStyle = window.getComputedStyle(elmnt);
-        const elementWidth = parseInt(elementStyle.width);
-        const elementHeight = parseInt(elementStyle.height);
-        const elementMarginLeft = parseInt(elementStyle.marginLeft);
-        const elementMarginTop = parseInt(elementStyle.marginTop);
-        const elementMarginRight = parseInt(elementStyle.marginRight);
-        const elementMarginBottom = parseInt(elementStyle.marginBottom);
-
-        const l = parent.offsetLeft;
-
-        // Make sure element is smallwer or equal to parent
-        if (elementWidth > parentWidth) {
-            elmnt.style.width = parentWidth + "px";
-        }
-        if (elementHeight > parentHeight) {
-            elmnt.style.height = parentHeight + "px";
-        }
-
-        // Clamp the element to the parent
-        // let minPos = parentPaddingLeft - elementMarginLeft + l;
-        // let maxPos = parentWidth - parentPaddingRight - elementWidth - elementMarginRight + l - 1;
-        // const currentLeft = parseInt(elmnt.style.left);
-        // elmnt.style.left = Clamp(currentLeft, minPos, maxPos) + "px";
-
-        // const minYPos = parentPaddingTop - elementMarginTop;
-        // const maxYPos = parentHeight - parentPaddingBottom - elementHeight - elementMarginBottom;
-        // const currentTop = parseInt(elmnt.style.top);
-        // elmnt.style.top = Clamp(currentTop, minYPos, maxYPos) + "px";
+        // set the element's new width and height:
+        elmnt.style.width = (elmnt.offsetWidth - pos1 * scaleMultiplier) + "px";
+        elmnt.style.height = (elmnt.offsetHeight - pos2 * scaleMultiplier) + "px";
     }
 
     function closeDragElement(e) {
@@ -217,28 +269,50 @@ export function valuesToDefault(obj) {
 
 export function load() {
     let jsItems = objUtils.deserializeJsAsText(localStorage.getItem("items"));
-    if (jsItems === null) jsItems = [];
+    let canvas = objUtils.deserializeJsAsText(localStorage.getItem("canvas"));
 
-    let htmlItemsData = objUtils.deserializeJsAsText(localStorage.getItem("htmlItemsData"));
-    if (htmlItemsData === null) htmlItemsData = [];
+    let data = { jsItems, canvas };
+    tryMakeDataValid(data);
 
-    let scale = localStorage.getItem("scale");
-    if (scale === null) scale = 1;
-    else scale = parseFloat(scale);
+    return data;
+}
 
-    let htmlItems = [];
+export function tryMakeDataValid(data) {
+    // If it doesn contain the jsItems, then it is not valid
+    if (!data.hasOwnProperty("jsItems") || data.jsItems === null) {
+        data.jsItems = [];
+    }
 
-    return { jsItems, htmlItemsData, htmlItems, scale };
+    // If it doesn't contain canvas, then it is not valid
+    if (!data.hasOwnProperty("canvas") || data.canvas === null) {
+        data.canvas = { scale: 1 };
+    }
+
+    // If it doesn't contain scale, then it is not valid
+    if (!data.canvas.hasOwnProperty("scale") || data.canvas.scale === null)
+        data.canvas.scale = 1;
+
+    // If it doesn't contain transform, then it is not valid
+    if (!data.canvas.hasOwnProperty("transform") || data.canvas.transform === null)
+        data.canvas.transform = { x: 0, y: 0 };
+
+    // Iterate each jsItem and add jsWindows$jsEditor to it (if it doesn't exist)
+    for (let i = 0; i < data.jsItems.length; i++) {
+        const jsItem = data.jsItems[i];
+        if (!jsItem.hasOwnProperty("windows$jsEditor"))
+            jsItem.windows$jsEditor = null;
+    }
+
+    return true
 }
 
 export function save(data) {
     localStorage.setItem("items", objUtils.serializeJsAsText(data.jsItems));
-    localStorage.setItem("htmlItemsData", objUtils.serializeJsAsText(data.htmlItemsData));
-    localStorage.setItem("scale", data.scale);
+    localStorage.setItem("canvas", objUtils.serializeJsAsText(data.canvas));
 }
 
 export function saveConfigToFile(data, fileName) {
-    const config = { jsItems: data.jsItems, htmlItemsData: data.htmlItemsData, scale: data.scale }
+    const config = { jsItems: data.jsItems, canvas: data.canvas }
     saveToFile(fileName, objUtils.serializeJsAsText(config));
 }
 
@@ -251,7 +325,7 @@ export function loadConfigFromFile() {
     return file;
 }
 
-export function importUTF8StringAsJSObject(str) {
+export function importModuleFromString(str) {
     return import(/* @vite-ignore */ "data:text/javascript;utf-8," + str);
 }
 
@@ -300,4 +374,215 @@ function saveToFile(fileName, data) {
         window.URL.revokeObjectURL(url);
     }
         , 0);
+}
+
+function checkIfValidJsEditorValue(obj) {
+    // If the object contains a type$jsEditor property, it is a valid editor object
+    return obj !== null && (obj.hasOwnProperty("type$jsEditor") || obj.hasOwnProperty("attributes$jsEditor"));
+}
+
+export function checkIfValidJsEditorObject(obj) {
+    // If it's an object, check every field, if it's an array, check every item
+    // Use recursion
+    if (getTypeAsString(obj) === "Object") {
+        for (let [key, value] of Object.entries(obj)) {
+            if (!checkIfValidJsEditorValue(value))
+                return false;
+        }
+    }
+    else if (getTypeAsString(obj) === "Array") {
+        for (let i = 0; i < obj.length; i++) {
+            if (!checkIfValidJsEditorValue(obj[i]))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+function levenshteinDistance(str1, str2) {
+    let dp = new Array(str1.length + 1);
+    for (let i = 0; i < dp.length; i++) {
+        dp[i] = new Array(str2.length + 1);
+    }
+
+    for (let i = 0; i < dp.length; i++) {
+        dp[i][0] = i;
+    }
+
+    for (let i = 0; i < dp[0].length; i++) {
+        dp[0][i] = i;
+    }
+
+    for (let i = 1; i < dp.length; i++) {
+        for (let j = 1; j < dp[0].length; j++) {
+            if (str1[i - 1] === str2[j - 1])
+                dp[i][j] = dp[i - 1][j - 1];
+            else
+                dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1;
+        }
+    }
+
+    return dp[dp.length - 1][dp[0].length - 1];
+}
+
+export function checkIfErrorCanBeIgnored(errorMsg) {
+    const errorsToIgnore = ["ResizeObserver loop limit exceeded"]
+    for (let i = 0; i < errorsToIgnore.length; i++) {
+        if (levenshteinDistance(errorMsg, errorsToIgnore[i]) < 3)
+            return true;
+    }
+}
+
+export function convertToEditorObject(obj) {
+    // Iterate object entries
+    for (let [key, value] of Object.entries(obj)) {
+        if (checkIfValidJsEditorValue(value)) {
+            if (!value.hasOwnProperty("type$jsEditor"))
+                value.type$jsEditor = getTypeAsString(value.value);
+
+            let type = value.type$jsEditor;
+            if (type === "Object" || type === "Array")
+                obj[key].value = convertToEditorObject(value.value);
+            continue;
+        }
+
+        // Switch statement
+        switch (getTypeAsString(value)) {
+            case "Number":
+                obj[key] = { value: value, type$jsEditor: "Number" };
+                break;
+            case "String":
+                obj[key] = { value: value, type$jsEditor: "String" };
+                break;
+            case "Boolean":
+                obj[key] = { value: value, type$jsEditor: "Boolean" };
+                break;
+            case "Object":
+                obj[key] = { value: convertToEditorObject(value), type$jsEditor: "Object" };
+                break;
+            case "Array":
+                obj[key] = { value: convertToEditorObject(value), type$jsEditor: "Array" };
+                break;
+            case "Function":
+                obj[key] = { value: value, type$jsEditor: "Function" };
+                break;
+            case "Null":
+                obj[key] = { value: {}, type$jsEditor: "String" };
+            default:
+                break;
+        }
+    }
+
+    return obj;
+}
+
+export function convertToPureValues(obj) {
+    let newObj = objUtils.deepClone(obj);
+
+    // Iterate object entries
+    for (let [key, value] of Object.entries(newObj)) {
+        // Switch statement
+        switch (getTypeAsString(value.value)) {
+            case "Object":
+                newObj[key] = convertToPureValues(value.value);
+                break;
+            case "Array":
+                newObj[key] = convertToPureValues(value.value);
+                break;
+            default:
+                newObj[key] = value.value;
+                break;
+        }
+    }
+
+    return newObj;
+}
+
+export function checkObjectHidden(obj) {
+    if (obj.hasOwnProperty("attributes$jsEditor")) {
+        return obj.attributes$jsEditor.includes("HIDDEN")
+    }
+    else return false;
+}
+
+export function getAttribute(obj, attribute) {
+    if (obj.hasOwnProperty("attributes$jsEditor")) {
+        return obj.attributes$jsEditor.includes(attribute)
+    }
+    else return false;
+}
+
+export function checkLabelHidden(obj) {
+    if (obj.hasOwnProperty("attributes$jsEditor")) {
+        return obj.attributes$jsEditor.includes("HIDE_LABEL")
+    }
+    else return false;
+}
+
+export function getItemArrayName(obj, def) {
+    // Check if obj is an object
+    if (getTypeAsString(obj) !== "Object") return def + "";
+    return processFieldName(obj[getFirstFieldName(obj)].value, def)
+}
+
+function addAttributeToJsEditorObject(obj, attribute) {
+    // Check if it has the attributes property
+    if (!obj.hasOwnProperty("attributes$jsEditor")) {
+        obj.attributes$jsEditor = [];
+    }
+
+    // Check if it has the attribute
+    if (!obj.attributes$jsEditor.includes(attribute)) {
+        obj.attributes$jsEditor.push(attribute);
+    }
+}
+
+function deleteAttributeFromJsEditorObject(obj, attribute) {
+    // Check if it has the attributes property
+    if (!obj.hasOwnProperty("attributes$jsEditor")) {
+        obj.attributes$jsEditor = [];
+    }
+
+    // Check if it has the attribute
+    if (obj.attributes$jsEditor.includes(attribute)) {
+        obj.attributes$jsEditor.splice(obj.attributes$jsEditor.indexOf(attribute), 1);
+    }
+}
+
+export function makeHidden(obj) {
+
+    // Convert to editor object
+    obj = convertToEditorObject({ obj }).obj;
+
+    addAttributeToJsEditorObject(obj, "HIDDEN");
+
+    return obj;
+}
+
+export function makeReadOnly(obj) {
+    // Convert to editor object
+    obj = convertToEditorObject({ obj }).obj;
+
+    addAttributeToJsEditorObject(obj, "READ_ONLY");
+
+    return obj;
+}
+
+export function addAttribute(obj, attribute) {
+    // Convert to editor object
+    obj = convertToEditorObject({ obj }).obj;
+
+    addAttributeToJsEditorObject(obj, attribute);
+
+    return obj;
+}
+
+export function removeAttribute(obj, attribute) {
+    // Convert to editor object
+    obj = convertToEditorObject({ obj }).obj;
+
+    deleteAttributeFromJsEditorObject(obj, attribute);
+
+    return obj;
 }

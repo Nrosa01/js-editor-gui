@@ -15,6 +15,6 @@
 
 <div
   bind:this="{bar}"
-  class="{`fixed top-0 left-0 rounded-full h-16 px-4 w-fit m-0 z-[1000] flex flex-row items-center justify-center bg-gray-700 text-white shadow-lg ${$$props.class ?? ''}`}">
+  class="{`fixed top-0 left-0 rounded-full h-16 px-4 w-fit m-0 z-[1000] flex flex-row items-center justify-center bg-gray-700 text-slate-100 shadow-lg ${$$props.class ?? ''}`}">
   <slot />
 </div>

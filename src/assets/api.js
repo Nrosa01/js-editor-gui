@@ -1,11 +1,18 @@
 import * as objUtils from './objectUtils.js'
+import * as utils from './utils.js'
 
 // Api object that framework will use to call functions
 // Empty functions are added to support intellisense, the framework will replace them with actual functions
 export let api = {
     serializeJsAsText: objUtils.serializeJsAsText,
     deserializeJsAsText: objUtils.deserializeJsAsText,
-    makeReadOnly: objUtils.makeReadOnly,
+    makeReadOnly: utils.makeReadOnly,
+    makeHidden: utils.makeHidden,
+    convertToPureValues: utils.convertToPureValues,
+    convertToEditorObject: utils.convertToEditorObject,
+    getAttribute: utils.getAttribute,
+    addAttribute: utils.addAttribute,
+    removeAttribute: utils.removeAttribute,
     add: () => {},
     addItem: () => {},
     clear: () => {},
@@ -14,7 +21,8 @@ export let api = {
     getScale: () => {},
     setScale: () => {},
     saveToFile: () => {},
-    loadFromFile: () => {}
+    loadFromFile: () => {},
+    updateView: () => {},
 }
 
 export function addToApi(fieldName, fieldValue) {
