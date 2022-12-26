@@ -8,7 +8,7 @@
   export let label = "Default";
 
   const containerStyle =
-    "border rounded-md box-content my-1 mx-2 font-bold text-slate-200 bg-slate-600 border-2 border-slate-800/0 rounded-md shadow-lg";
+    "border rounded-md box-content my-1 mx-2 font-bold text-slate-200 bg-slate-600 border-0  rounded-md shadow-lg";
 
   function mouseenter() {
     // Wait 0.1s before showing the dropdown

@@ -20,7 +20,7 @@
 
   let data = utils.load();
 
-  const addElmnd = async () => {
+  const addFromFile = async () => {
     let loadedFile = await utils.loadFile(".js, .json");
     loadedFile = await utils.importModuleFromString(loadedFile);
 
@@ -157,7 +157,7 @@
 
   // Api functions
   addToApi("add", addObj);
-  addToApi("addItem", addElmnd);
+  addToApi("addFromFile", addFromFile);
   addToApi("clear", () => {
     data.jsItems = [];
     localStorage.clear();
