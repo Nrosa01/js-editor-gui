@@ -28,6 +28,10 @@ The application currently supports the following features:
 - Array Labels
 - Simple API
 
+# Interface
+
+There is a bottom bar that allows you to add an object, clear the board, save to file and load from file in that order. You can zoom the canvas with control + mouse wheel and pan it with the middle mouse button. You can also use control + and control - to zoom. That's all the GUI the app currently have apart from the windows. This will change in futures, very futures updates (once the core is totally finished and stable).
+
 # How to create a module
 
 This app takes js modules. It must provide a default export. Only the default export is used. If the object uses other items from the module, it will fail. There is some error handling, but it's not perfect. If you manage to make the app crash it will ask you if you want to delete local storage, if you do, it will reset the app. I recommend you to save the board every once in a while.
@@ -91,6 +95,10 @@ The api object has the following functions:
 - ``saveToFile``: Saves the board and the config (position and scale of canvas) to a file.
 - ``getItems``: Returns an array with all the items in the board. Be aware they are in the editor format (with type and value fields).
 - ``updateView``: Updates the view. It will re-render all the windows. Useful if you modify the object from the outside. If you add a hidden attribute, or a read only attribute, you need to call this function to update the view.
+
+# Performance
+
+Performance of the web should be ok with a normal amount of windows (around 20). I haven't tested it with more but there is room to improvement. As I'm abusing Svelte binding it should get slow when there are a lot of windows expanded, if they are not expanded bindings don't affect performance.
 
 # Render example
 
