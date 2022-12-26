@@ -7,6 +7,7 @@
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
   import FunctionLabel from "./FunctionLabel.svelte";
+  import DropdownLabel from "./DropdownLabel.svelte";
   import ArrayLabel from "./ArrayLabel.svelte";
   import { onMount } from "svelte";
   import { getAttribute, processFieldName } from "../../assets/utils.js";
@@ -43,6 +44,7 @@
     Object: ObjectLabel,
     Array: ArrayLabel,
     Function: FunctionLabel,
+    Dropdown: DropdownLabel,
   };
 
   // Iterate all values, if they don't have attributes$jsonEditor, add them

@@ -7,6 +7,7 @@
   import TextLabel from "./TextLabel.svelte";
   import NumLabel from "./NumLabel.svelte";
   import BoolLabel from "./BoolLabel.svelte";
+  import DropdownLabel from "./DropdownLabel.svelte";
   import { getAttribute, processFieldName } from "../../assets/utils.js";
   import { onMount } from "svelte";
 
@@ -26,6 +27,7 @@
     Array: ArrayLabel,
     Object: ObjectLabel,
     Function: FunctionLabel,
+    Dropdown: DropdownLabel,
   };
 
   $: {
