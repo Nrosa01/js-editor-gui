@@ -1,39 +1,58 @@
 <script>
-    import { processFieldName } from "../../assets/utils.js";
-    import { checkLabelHidden } from "../../assets/utils.js";
-    import { getAttribute } from "../../assets/utils.js";
-  
-    export let parent;
-    export let fieldValue;
-    export let fieldName = "Name";
-    let read_only = false;
-    let hiddenLabel = false;
-  
-    console.log("DropdownLabel: ", fieldName, fieldValue)
+  import { processFieldName } from "../../assets/utils.js";
+  import { checkLabelHidden } from "../../assets/utils.js";
+  import { getAttribute } from "../../assets/utils.js";
+  import Dropdown from "../Dropdown/Dropdown.svelte";
+  import DropdownItem from "../Dropdown/DropdownItem.svelte";
 
-    $:
-    {
-      if(fieldValue !== null)
-      {
-        read_only = getAttribute(fieldValue, "READ_ONLY");
-        hiddenLabel = checkLabelHidden(fieldValue);
+  export let parent;
+  export let fieldValue;
+  export let fieldName = "Name";
+  let dropdownOptions = ["Default Value"];
+  let read_only = false;
+  let hiddenLabel = false;
+  let labelToValueMap = new Map();
+  let valueToLabelMap = new Map();
+
+  // console.log("DropdownLabel: ", fieldName, fieldValue);
+
+  $: {
+    if (fieldValue !== null) {
+      read_only = getAttribute(fieldValue, "READ_ONLY");
+      hiddenLabel = checkLabelHidden(fieldValue);
+      dropdownOptions = fieldValue.options;
+
+      // If the map is empty, fill it with the values
+      if (labelToValueMap.size === 0) {
+        for (let i = 0; i < dropdownOptions.length; i++) {
+          labelToValueMap.set(fieldValue.options[i], fieldValue.values[i]);
+          valueToLabelMap.set(fieldValue.values[i], fieldValue.options[i]);
+        }
       }
     }
-  
-    let inputClasses =
-      "border rounded-md focus:outline-none focus:ring-1 box-content px-2 py-1 my-1 mx-2 read-only:text-slate-400 first-letter:px-2 font-bold text-slate-200 bg-slate-600 border-2 border-slate-800/0 mr-2 rounded-md shadow-lg col-span-2";
-  
-    $: labelROClasses = read_only ? "text-slate-400" : "text-slate-200";
-  </script>
-  
-  <div
-    class="{`relative grid grid-cols-3 w-full items-center bg-slate-500 text-slate-200 font-bold pl-4`}">
-    <h3 class="{hiddenLabel ? 'hidden' : ''} {labelROClasses}">{processFieldName(fieldName)}</h3>
-    <input
-      disabled="{read_only}"
-      bind:value="{fieldValue.value}"
-      type="text"
-      class="{inputClasses} {hiddenLabel ? 'col-span-3' : ''} {read_only ? "text-slate-400" :  "text-slate-200"} "
-      placeholder="{fieldValue?.inputLabel ?? 'Introduce un numero'}" />
-  </div>
-  
+  }
+
+  $: labelROClasses = read_only ? "text-slate-400" : "text-slate-200";
+
+  function optionSelected(event)
+  {
+    fieldValue.value = labelToValueMap.get(event.detail);
+  }
+</script>
+
+<div
+  class="{`relative grid grid-cols-3 w-full items-center bg-slate-500 text-slate-200 font-bold pl-4`}">
+  <h3 class="{hiddenLabel ? 'hidden' : ''} {labelROClasses}">
+    {processFieldName(fieldName)}
+  </h3>
+  <Dropdown
+    on:optionSelected="{optionSelected}"
+    label={valueToLabelMap.get(fieldValue.value)}
+    class="{hiddenLabel ? 'col-span-3' : 'col-span-2'} {read_only
+      ? 'text-slate-400'
+      : 'text-slate-200'}">
+    {#each dropdownOptions as option}
+      <DropdownItem>{option}</DropdownItem>
+    {/each}
+  </Dropdown>
+</div>
