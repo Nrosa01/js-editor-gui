@@ -27,10 +27,14 @@
     // Set center as pivot point
     dragElementNode.style.transformOrigin = "center";
 
+    const translateX = parseInt(parentStyle.transform.split(",")[4]);
+    const translateY = parseInt(parentStyle.transform.split(",")[5]);
+    const scale = parseFloat(parentStyle.transform.split(",")[3]);
+
     if (attributes === null || Object.keys(attributes).length === 0) {
       attributes = {
-        top: parentHeight / 2 - elementHeight / 2,
-        left: parentWidth / 2 - elementWidth / 2,
+        top: parentHeight / 2 - elementHeight / 2 - translateY /  scale,
+        left: parentWidth / 2 - elementWidth / 2 - translateX / scale,
         zIndex: document.querySelectorAll(".absolute").length,
       };
     }
